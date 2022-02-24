@@ -43,7 +43,6 @@ implementation
 
 {$R *.lfm}
 
-// TODO: not working
 function TBuildStatusWindow.BuildDocument(CommandLine: String): Boolean;
 var
   p: TProcess;
@@ -78,6 +77,7 @@ begin
   else begin
     // There was some output. Chances are that warnings occurred.
     // Keep it shown.
+    // TODO: This does not always work well...
     result := False
   end;
 end;
