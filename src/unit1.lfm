@@ -1,0 +1,987 @@
+object MainForm: TMainForm
+  Left = 1932
+  Height = 692
+  Top = 147
+  Width = 861
+  Caption = 'groffstudio'
+  ClientHeight = 692
+  ClientWidth = 861
+  OnClose = FormClose
+  OnCreate = FormCreate
+  LCLVersion = '2.2.0.4'
+  object MainStatusBar: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 669
+    Width = 861
+    Panels = <    
+      item
+        Text = 'file name with save status'
+        Width = 200
+      end    
+      item
+        Text = 'build successful?'
+        Width = 120
+      end    
+      item
+        Text = 'update available'
+        Width = 120
+      end>
+    SimplePanel = False
+  end
+  object ExtendedNotebook1: TExtendedNotebook
+    Left = 10
+    Height = 662
+    Top = 8
+    Width = 841
+    ActivePage = tsEdit
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Style = tsFlatButtons
+    TabIndex = 0
+    TabOrder = 1
+    object tsEdit: TTabSheet
+      Caption = 'edit a groff document'
+      ClientHeight = 631
+      ClientWidth = 833
+      ParentFont = False
+      object GroupBox1: TGroupBox
+        Left = 10
+        Height = 65
+        Top = 561
+        Width = 813
+        Align = alBottom
+        BorderSpacing.Left = 10
+        BorderSpacing.Right = 10
+        BorderSpacing.Bottom = 5
+        Caption = 'build'
+        ClientHeight = 45
+        ClientWidth = 809
+        TabOrder = 0
+        object Label1: TLabel
+          Left = 112
+          Height = 15
+          Top = -4
+          Width = 72
+          Caption = 'macro to use:'
+        end
+        object cmbMacro: TComboBox
+          Left = 112
+          Height = 23
+          Top = 14
+          Width = 100
+          ItemHeight = 15
+          Items.Strings = (
+            'man'
+            'me'
+            'mm'
+            'mom'
+            'ms'
+          )
+          TabOrder = 0
+          Text = '[ select ]'
+        end
+        object Label2: TLabel
+          Left = 686
+          Height = 15
+          Top = -4
+          Width = 78
+          Anchors = [akTop, akRight]
+          Caption = 'output format:'
+        end
+        object rdPs: TRadioButton
+          Left = 686
+          Height = 19
+          Top = 14
+          Width = 73
+          Anchors = [akTop, akRight]
+          Caption = 'PostScript'
+          OnChange = rdPsChange
+          TabOrder = 1
+        end
+        object rdPdf: TRadioButton
+          Left = 766
+          Height = 19
+          Top = 14
+          Width = 41
+          Anchors = [akTop, akRight]
+          Caption = 'PDF'
+          OnChange = rdPdfChange
+          TabOrder = 2
+        end
+        object Label3: TLabel
+          Left = 304
+          Height = 15
+          Top = -4
+          Width = 76
+          Anchors = [akTop, akRight]
+          Caption = 'preprocessors:'
+        end
+        object chkEqn: TCheckBox
+          Left = 360
+          Height = 19
+          Top = 14
+          Width = 40
+          Anchors = [akTop, akRight]
+          Caption = 'eqn'
+          TabOrder = 3
+        end
+        object chkPic: TCheckBox
+          Left = 446
+          Height = 19
+          Top = 14
+          Width = 36
+          Anchors = [akTop, akRight]
+          Caption = 'pic'
+          TabOrder = 4
+        end
+        object chkTbl: TCheckBox
+          Left = 534
+          Height = 19
+          Top = 14
+          Width = 34
+          Anchors = [akTop, akRight]
+          Caption = 'tbl'
+          TabOrder = 5
+        end
+        object chkGrn: TCheckBox
+          Left = 404
+          Height = 19
+          Top = 14
+          Width = 38
+          Anchors = [akTop, akRight]
+          Caption = 'grn'
+          TabOrder = 6
+        end
+        object chkChem: TCheckBox
+          Left = 304
+          Height = 19
+          Top = 14
+          Width = 50
+          Anchors = [akTop, akRight]
+          Caption = 'chem'
+          TabOrder = 7
+        end
+        object chkRefer: TCheckBox
+          Left = 486
+          Height = 19
+          Top = 14
+          Width = 44
+          Anchors = [akTop, akRight]
+          Caption = 'refer'
+          TabOrder = 8
+        end
+        object Label4: TLabel
+          Left = 587
+          Height = 15
+          Top = -4
+          Width = 34
+          Anchors = [akTop, akRight]
+          Caption = 'extras:'
+        end
+        object chkPdfMark: TCheckBox
+          Left = 587
+          Height = 19
+          Top = 14
+          Width = 65
+          Anchors = [akTop, akRight]
+          Caption = 'Pdfmark'
+          Enabled = False
+          TabOrder = 9
+        end
+        object btnBuild: TButton
+          Left = 16
+          Height = 29
+          Top = 8
+          Width = 75
+          Caption = 'build'
+          Color = clLime
+          Enabled = False
+          Font.Style = [fsBold, fsItalic]
+          OnClick = btnBuildClick
+          ParentFont = False
+          TabOrder = 10
+        end
+      end
+      object btnSaveGroff: TButton
+        Left = 748
+        Height = 28
+        Top = 530
+        Width = 75
+        Anchors = [akRight, akBottom]
+        Caption = 'save'
+        Font.Style = [fsBold]
+        OnClick = btnSaveGroffClick
+        ParentFont = False
+        TabOrder = 1
+      end
+      object btnLoadGroff: TButton
+        Left = 667
+        Height = 28
+        Top = 530
+        Width = 75
+        Anchors = [akRight, akBottom]
+        Caption = 'load'
+        Font.Style = [fsBold]
+        OnClick = btnLoadGroffClick
+        ParentFont = False
+        TabOrder = 2
+      end
+      object Label5: TLabel
+        Left = 211
+        Height = 15
+        Top = 543
+        Width = 438
+        Anchors = [akRight, akBottom]
+        Caption = 'note that everything build-related will be stored in the document''s storage directory'
+        Font.Color = clBlue
+        Font.Style = [fsItalic]
+        ParentFont = False
+      end
+      inline SynEdit1: TSynEdit
+        Left = 10
+        Height = 523
+        Top = 0
+        Width = 813
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Font.CharSet = 4
+        Font.Height = -13
+        Font.Name = 'Consolas'
+        Font.Pitch = fpFixed
+        Font.Quality = fqCleartypeNatural
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 3
+        Gutter.Width = 55
+        Gutter.MouseActions = <>
+        RightGutter.Width = 0
+        RightGutter.MouseActions = <>
+        Keystrokes = <        
+          item
+            Command = ecUp
+            ShortCut = 38
+          end        
+          item
+            Command = ecSelUp
+            ShortCut = 8230
+          end        
+          item
+            Command = ecScrollUp
+            ShortCut = 16422
+          end        
+          item
+            Command = ecDown
+            ShortCut = 40
+          end        
+          item
+            Command = ecSelDown
+            ShortCut = 8232
+          end        
+          item
+            Command = ecScrollDown
+            ShortCut = 16424
+          end        
+          item
+            Command = ecLeft
+            ShortCut = 37
+          end        
+          item
+            Command = ecSelLeft
+            ShortCut = 8229
+          end        
+          item
+            Command = ecWordLeft
+            ShortCut = 16421
+          end        
+          item
+            Command = ecSelWordLeft
+            ShortCut = 24613
+          end        
+          item
+            Command = ecRight
+            ShortCut = 39
+          end        
+          item
+            Command = ecSelRight
+            ShortCut = 8231
+          end        
+          item
+            Command = ecWordRight
+            ShortCut = 16423
+          end        
+          item
+            Command = ecSelWordRight
+            ShortCut = 24615
+          end        
+          item
+            Command = ecPageDown
+            ShortCut = 34
+          end        
+          item
+            Command = ecSelPageDown
+            ShortCut = 8226
+          end        
+          item
+            Command = ecPageBottom
+            ShortCut = 16418
+          end        
+          item
+            Command = ecSelPageBottom
+            ShortCut = 24610
+          end        
+          item
+            Command = ecPageUp
+            ShortCut = 33
+          end        
+          item
+            Command = ecSelPageUp
+            ShortCut = 8225
+          end        
+          item
+            Command = ecPageTop
+            ShortCut = 16417
+          end        
+          item
+            Command = ecSelPageTop
+            ShortCut = 24609
+          end        
+          item
+            Command = ecLineStart
+            ShortCut = 36
+          end        
+          item
+            Command = ecSelLineStart
+            ShortCut = 8228
+          end        
+          item
+            Command = ecEditorTop
+            ShortCut = 16420
+          end        
+          item
+            Command = ecSelEditorTop
+            ShortCut = 24612
+          end        
+          item
+            Command = ecLineEnd
+            ShortCut = 35
+          end        
+          item
+            Command = ecSelLineEnd
+            ShortCut = 8227
+          end        
+          item
+            Command = ecEditorBottom
+            ShortCut = 16419
+          end        
+          item
+            Command = ecSelEditorBottom
+            ShortCut = 24611
+          end        
+          item
+            Command = ecToggleMode
+            ShortCut = 45
+          end        
+          item
+            Command = ecCopy
+            ShortCut = 16429
+          end        
+          item
+            Command = ecPaste
+            ShortCut = 8237
+          end        
+          item
+            Command = ecDeleteChar
+            ShortCut = 46
+          end        
+          item
+            Command = ecCut
+            ShortCut = 8238
+          end        
+          item
+            Command = ecDeleteLastChar
+            ShortCut = 8
+          end        
+          item
+            Command = ecDeleteLastChar
+            ShortCut = 8200
+          end        
+          item
+            Command = ecDeleteLastWord
+            ShortCut = 16392
+          end        
+          item
+            Command = ecUndo
+            ShortCut = 32776
+          end        
+          item
+            Command = ecRedo
+            ShortCut = 40968
+          end        
+          item
+            Command = ecLineBreak
+            ShortCut = 13
+          end        
+          item
+            Command = ecSelectAll
+            ShortCut = 16449
+          end        
+          item
+            Command = ecCopy
+            ShortCut = 16451
+          end        
+          item
+            Command = ecBlockIndent
+            ShortCut = 24649
+          end        
+          item
+            Command = ecLineBreak
+            ShortCut = 16461
+          end        
+          item
+            Command = ecInsertLine
+            ShortCut = 16462
+          end        
+          item
+            Command = ecDeleteWord
+            ShortCut = 16468
+          end        
+          item
+            Command = ecBlockUnindent
+            ShortCut = 24661
+          end        
+          item
+            Command = ecPaste
+            ShortCut = 16470
+          end        
+          item
+            Command = ecCut
+            ShortCut = 16472
+          end        
+          item
+            Command = ecDeleteLine
+            ShortCut = 16473
+          end        
+          item
+            Command = ecDeleteEOL
+            ShortCut = 24665
+          end        
+          item
+            Command = ecUndo
+            ShortCut = 16474
+          end        
+          item
+            Command = ecRedo
+            ShortCut = 24666
+          end        
+          item
+            Command = ecGotoMarker0
+            ShortCut = 16432
+          end        
+          item
+            Command = ecGotoMarker1
+            ShortCut = 16433
+          end        
+          item
+            Command = ecGotoMarker2
+            ShortCut = 16434
+          end        
+          item
+            Command = ecGotoMarker3
+            ShortCut = 16435
+          end        
+          item
+            Command = ecGotoMarker4
+            ShortCut = 16436
+          end        
+          item
+            Command = ecGotoMarker5
+            ShortCut = 16437
+          end        
+          item
+            Command = ecGotoMarker6
+            ShortCut = 16438
+          end        
+          item
+            Command = ecGotoMarker7
+            ShortCut = 16439
+          end        
+          item
+            Command = ecGotoMarker8
+            ShortCut = 16440
+          end        
+          item
+            Command = ecGotoMarker9
+            ShortCut = 16441
+          end        
+          item
+            Command = ecSetMarker0
+            ShortCut = 24624
+          end        
+          item
+            Command = ecSetMarker1
+            ShortCut = 24625
+          end        
+          item
+            Command = ecSetMarker2
+            ShortCut = 24626
+          end        
+          item
+            Command = ecSetMarker3
+            ShortCut = 24627
+          end        
+          item
+            Command = ecSetMarker4
+            ShortCut = 24628
+          end        
+          item
+            Command = ecSetMarker5
+            ShortCut = 24629
+          end        
+          item
+            Command = ecSetMarker6
+            ShortCut = 24630
+          end        
+          item
+            Command = ecSetMarker7
+            ShortCut = 24631
+          end        
+          item
+            Command = ecSetMarker8
+            ShortCut = 24632
+          end        
+          item
+            Command = ecSetMarker9
+            ShortCut = 24633
+          end        
+          item
+            Command = EcFoldLevel1
+            ShortCut = 41009
+          end        
+          item
+            Command = EcFoldLevel2
+            ShortCut = 41010
+          end        
+          item
+            Command = EcFoldLevel3
+            ShortCut = 41011
+          end        
+          item
+            Command = EcFoldLevel4
+            ShortCut = 41012
+          end        
+          item
+            Command = EcFoldLevel5
+            ShortCut = 41013
+          end        
+          item
+            Command = EcFoldLevel6
+            ShortCut = 41014
+          end        
+          item
+            Command = EcFoldLevel7
+            ShortCut = 41015
+          end        
+          item
+            Command = EcFoldLevel8
+            ShortCut = 41016
+          end        
+          item
+            Command = EcFoldLevel9
+            ShortCut = 41017
+          end        
+          item
+            Command = EcFoldLevel0
+            ShortCut = 41008
+          end        
+          item
+            Command = EcFoldCurrent
+            ShortCut = 41005
+          end        
+          item
+            Command = EcUnFoldCurrent
+            ShortCut = 41003
+          end        
+          item
+            Command = EcToggleMarkupWord
+            ShortCut = 32845
+          end        
+          item
+            Command = ecNormalSelect
+            ShortCut = 24654
+          end        
+          item
+            Command = ecColumnSelect
+            ShortCut = 24643
+          end        
+          item
+            Command = ecLineSelect
+            ShortCut = 24652
+          end        
+          item
+            Command = ecTab
+            ShortCut = 9
+          end        
+          item
+            Command = ecShiftTab
+            ShortCut = 8201
+          end        
+          item
+            Command = ecMatchBracket
+            ShortCut = 24642
+          end        
+          item
+            Command = ecColSelUp
+            ShortCut = 40998
+          end        
+          item
+            Command = ecColSelDown
+            ShortCut = 41000
+          end        
+          item
+            Command = ecColSelLeft
+            ShortCut = 40997
+          end        
+          item
+            Command = ecColSelRight
+            ShortCut = 40999
+          end        
+          item
+            Command = ecColSelPageDown
+            ShortCut = 40994
+          end        
+          item
+            Command = ecColSelPageBottom
+            ShortCut = 57378
+          end        
+          item
+            Command = ecColSelPageUp
+            ShortCut = 40993
+          end        
+          item
+            Command = ecColSelPageTop
+            ShortCut = 57377
+          end        
+          item
+            Command = ecColSelLineStart
+            ShortCut = 40996
+          end        
+          item
+            Command = ecColSelLineEnd
+            ShortCut = 40995
+          end        
+          item
+            Command = ecColSelEditorTop
+            ShortCut = 57380
+          end        
+          item
+            Command = ecColSelEditorBottom
+            ShortCut = 57379
+          end>
+        MouseActions = <>
+        MouseTextActions = <>
+        MouseSelActions = <>
+        Options = [eoAutoIndent, eoGroupUndo, eoHideRightMargin, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDragDropEditing, eoDoubleClickSelectsLine]
+        Options2 = [eoEnhanceEndKey, eoFoldedCopyPaste, eoPersistentBlock, eoOverwriteBlock, eoAcceptDragDropEditing]
+        MouseOptions = [emDragDropEditing, emDoubleClickSelectsLine]
+        VisibleSpecialChars = [vscSpace, vscTabAtLast]
+        SelectedColor.BackPriority = 50
+        SelectedColor.ForePriority = 50
+        SelectedColor.FramePriority = 50
+        SelectedColor.BoldPriority = 50
+        SelectedColor.ItalicPriority = 50
+        SelectedColor.UnderlinePriority = 50
+        SelectedColor.StrikeOutPriority = 50
+        BracketHighlightStyle = sbhsBoth
+        BracketMatchColor.Background = clNone
+        BracketMatchColor.Foreground = clNone
+        BracketMatchColor.Style = [fsBold]
+        FoldedCodeColor.Background = clNone
+        FoldedCodeColor.Foreground = clGray
+        FoldedCodeColor.FrameColor = clGray
+        MouseLinkColor.Background = clNone
+        MouseLinkColor.Foreground = clBlue
+        LineHighlightColor.Background = clNone
+        LineHighlightColor.Foreground = clNone
+        WantTabs = False
+        OnChange = SynEdit1Change
+        inline SynLeftGutterPartList1: TSynGutterPartList
+          object SynGutterMarks1: TSynGutterMarks
+            Width = 24
+            MouseActions = <>
+          end
+          object SynGutterLineNumber1: TSynGutterLineNumber
+            Width = 15
+            MouseActions = <>
+            MarkupInfo.Background = clBtnFace
+            MarkupInfo.Foreground = clNone
+            DigitCount = 2
+            ShowOnlyLineNumbersMultiplesOf = 1
+            ZeroStart = False
+            LeadingZeros = False
+          end
+          object SynGutterChanges1: TSynGutterChanges
+            Width = 4
+            MouseActions = <>
+            ModifiedColor = 59900
+            SavedColor = clGreen
+          end
+          object SynGutterSeparator1: TSynGutterSeparator
+            Width = 2
+            MouseActions = <>
+            MarkupInfo.Background = clWhite
+            MarkupInfo.Foreground = clGray
+          end
+          object SynGutterCodeFolding1: TSynGutterCodeFolding
+            MouseActions = <>
+            MarkupInfo.Background = clNone
+            MarkupInfo.Foreground = clGray
+            MouseActionsExpanded = <>
+            MouseActionsCollapsed = <>
+          end
+        end
+      end
+    end
+    object tsSettings: TTabSheet
+      Caption = 'groffstudio settings'
+      ClientHeight = 631
+      ClientWidth = 833
+      object chkAutoSaveBuildSettings: TCheckBox
+        Left = 0
+        Height = 19
+        Top = 16
+        Width = 312
+        Caption = 'Save and restore the chosen build settings for next time'
+        TabOrder = 0
+      end
+      object btnSaveSettings: TButton
+        Left = 744
+        Height = 25
+        Top = 600
+        Width = 91
+        Anchors = [akRight, akBottom]
+        Caption = 'save settings'
+        OnClick = btnSaveSettingsClick
+        TabOrder = 1
+      end
+      object Label14: TLabel
+        Left = 0
+        Height = 15
+        Top = 48
+        Width = 129
+        Caption = 'Yes, that''s all for now. :-)'
+      end
+    end
+    object tsGroff: TTabSheet
+      Caption = 'groff version'
+      ClientHeight = 631
+      ClientWidth = 833
+      object GroupBox2: TGroupBox
+        Left = 20
+        Height = 57
+        Top = 566
+        Width = 793
+        Align = alBottom
+        BorderSpacing.Left = 20
+        BorderSpacing.Right = 20
+        BorderSpacing.Bottom = 8
+        Caption = 'groff for Windows'
+        ClientHeight = 37
+        ClientWidth = 789
+        TabOrder = 0
+        object Label6: TLabel
+          Left = 8
+          Height = 15
+          Top = 8
+          Width = 108
+          Caption = 'latest version online:'
+        end
+        object edtOnlineGroffVersionWindows: TEdit
+          Left = 136
+          Height = 15
+          Top = 8
+          Width = 556
+          Anchors = [akTop, akLeft, akRight]
+          BorderStyle = bsNone
+          Enabled = False
+          TabOrder = 0
+          Text = 'fetching ...'
+        end
+        object btnDownloadGroffWindows: TButton
+          Left = 700
+          Height = 25
+          Top = 5
+          Width = 80
+          Anchors = [akTop, akRight]
+          Caption = 'download it'
+          OnClick = btnDownloadGroffWindowsClick
+          TabOrder = 1
+        end
+      end
+      object Label7: TLabel
+        Left = 8
+        Height = 30
+        Top = 8
+        Width = 821
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'as you might guess, groffstudio requires a working installation of groff. this page performs the basic checks for you. note that on windows, everything is harder than it should. :-)'
+        Constraints.MaxHeight = 582
+        WordWrap = True
+      end
+      object Label9: TLabel
+        Left = 8
+        Height = 15
+        Top = 56
+        Width = 70
+        Caption = 'groff version:'
+      end
+      object edtGroffInstalledVersion: TEdit
+        Left = 144
+        Height = 15
+        Top = 56
+        Width = 685
+        Anchors = [akTop, akLeft, akRight]
+        BorderStyle = bsNone
+        Enabled = False
+        TabOrder = 1
+      end
+      object lblTroffCommandNotFound: TLabel
+        Left = 8
+        Height = 45
+        Top = 112
+        Width = 820
+        Anchors = [akTop, akLeft, akRight]
+        Caption = 'groff was not found. in order to use groffstudio, you absolutely need groff in your PATH variable. on unix and unix-like systems, you''ll need to edit the $PATH variable. on windows, i warmly recommend the Rapid Environment Editor for that.'#13#10'please exit groffstudio at your nearest convenience and adjust your PATH variables. then try again.'
+        Font.Color = clRed
+        ParentFont = False
+        Visible = False
+        WordWrap = True
+      end
+      object edtGroffstudioInstalledVersion: TEdit
+        Left = 144
+        Height = 15
+        Top = 77
+        Width = 685
+        Anchors = [akTop, akLeft, akRight]
+        BorderStyle = bsNone
+        Enabled = False
+        TabOrder = 2
+      end
+      object Label10: TLabel
+        Left = 8
+        Height = 15
+        Top = 77
+        Width = 103
+        Caption = 'groffstudio version:'
+      end
+    end
+    object tsAbout: TTabSheet
+      Caption = 'about groffstudio'
+      ClientHeight = 631
+      ClientWidth = 833
+      object lblAboutProductName: TLabel
+        Left = 0
+        Height = 61
+        Top = 16
+        Width = 315
+        Caption = 'groffstudio x.y.z'
+        Font.Color = clBlue
+        Font.Height = -45
+        ParentFont = False
+      end
+      object Label8: TLabel
+        Left = 20
+        Height = 15
+        Top = 80
+        Width = 217
+        Caption = 'brought to you by tux0r and contributors'
+      end
+      object Label11: TLabel
+        Left = 0
+        Height = 15
+        Top = 128
+        Width = 45
+        Caption = 'Website:'
+        Font.Style = [fsItalic]
+        ParentFont = False
+      end
+      object Label12: TLabel
+        Left = 0
+        Height = 15
+        Top = 152
+        Width = 57
+        Caption = 'Repository:'
+        Font.Style = [fsItalic]
+        ParentFont = False
+      end
+      object Label13: TLabel
+        Left = 0
+        Height = 15
+        Top = 176
+        Width = 99
+        Caption = 'Repository (mirror):'
+        Font.Style = [fsItalic]
+        ParentFont = False
+      end
+      object mLicense: TMemo
+        Left = 0
+        Height = 418
+        Top = 216
+        Width = 840
+        Anchors = [akTop, akLeft, akRight]
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+      object lblWebsite: TLabel
+        Cursor = crHandPoint
+        Left = 120
+        Height = 15
+        Top = 128
+        Width = 99
+        Caption = 'groff.tuxproject.de'
+        Font.Color = clBlue
+        Font.Style = [fsUnderline]
+        ParentFont = False
+        OnClick = lblWebsiteClick
+      end
+      object lblFossilRepo: TLabel
+        Cursor = crHandPoint
+        Left = 120
+        Height = 15
+        Top = 152
+        Width = 121
+        Caption = 'code.rosaelefanten.org'
+        Font.Color = clBlue
+        Font.Style = [fsUnderline]
+        ParentFont = False
+        OnClick = lblFossilRepoClick
+      end
+      object lblGithubRepo: TLabel
+        Cursor = crHandPoint
+        Left = 120
+        Height = 15
+        Top = 176
+        Width = 62
+        Caption = 'github.com'
+        Font.Color = clBlue
+        Font.Style = [fsUnderline]
+        ParentFont = False
+        OnClick = lblGithubRepoClick
+      end
+    end
+  end
+  object odOpenGroffFile: TOpenDialog
+    Title = 'open a groff document'
+    Left = 688
+    Top = 8
+  end
+  object sdSaveGroffFile: TSaveDialog
+    Title = 'save a groff document'
+    Left = 736
+    Top = 8
+  end
+  object iniStorage: TIniPropStorage
+    StoredValues = <>
+    IniFileName = 'groffstudio.ini'
+    Left = 584
+    Top = 8
+  end
+end

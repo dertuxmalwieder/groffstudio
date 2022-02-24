@@ -1,0 +1,20 @@
+object BuildStatusWindow: TBuildStatusWindow
+  Left = 2050
+  Height = 367
+  Top = 149
+  Width = 432
+  BorderStyle = bsDialog
+  Caption = 'build output'
+  ClientHeight = 367
+  ClientWidth = 432
+  LCLVersion = '2.2.0.4'
+  object mBuildOutput: TMemo
+    Left = 0
+    Height = 367
+    Top = 0
+    Width = 432
+    Align = alClient
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+end
