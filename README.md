@@ -9,11 +9,8 @@ You know what was missing with `groff`? A good alternative to TeXstudio. Here we
 ## Features
 
 * Written in Lazarus (Free Pascal).
-  
   * Should be cross-platform (but Windows support is mediocre yet).
-
 * Can produce PS and PDF files.
-
 * Can handle some macros.
 
 ## License
@@ -23,9 +20,7 @@ You know what was missing with `groff`? A good alternative to TeXstudio. Here we
 ## Links
 
 * Website: [groff.tuxproject.de](https://groff.tuxproject.de)
-
 * Repository: [code.rosaelefanten.org](https://code.rosaelefanten.org/groffstudio)
-  
   * Mirror: [GitHub](https://github.com/dertuxmalwieder/groffstudio)
 
 ## Donations
@@ -39,5 +34,6 @@ Thank you.
 
 ## Contact
 
+* IRC: [libera.chat: #groffstudio](irc://irc.libera.chat/groffstudio)
 * Twitter: [@tux0r](https://twitter.com/tux0r)
 * Matrix: @Cthulhux:matrix.org
