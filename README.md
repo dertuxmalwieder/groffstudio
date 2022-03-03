@@ -36,4 +36,4 @@ Thank you.
 
 * IRC: [libera.chat: #groffstudio](irc://irc.libera.chat/groffstudio)
 * Twitter: [@tux0r](https://twitter.com/tux0r)
-* Matrix: @Cthulhux:matrix.org
+* Matrix: @tux0r:matrix.org
