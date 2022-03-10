@@ -23,6 +23,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="10"/>
+      <RevisionNr Value="1"/>
       <Attributes pvaPreRelease="True"/>
       <StringTable ProductName="groffstudio"/>
     </VersionInfo>
