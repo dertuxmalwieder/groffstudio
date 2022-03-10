@@ -156,7 +156,7 @@ begin
   end;
 
   // Default file name
-  currentGroffFilePath := '[unsaved file]';
+  currentGroffFileName := '[unsaved file]';
 
   // Embed the license
   ResStream:= TResourceStream.Create(HInstance, 'LICENSE', RT_RCDATA);
@@ -298,7 +298,7 @@ procedure TMainForm.btnBuildClick(Sender: TObject);
 var
   buildSuccess: Boolean;
   buildOpts: String;
-  logFileName: String;
+  logFileName: String = '';
   outputFileName: String;
 begin
   // Reset status display:

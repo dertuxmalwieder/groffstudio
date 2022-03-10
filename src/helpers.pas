@@ -50,13 +50,14 @@ begin
 
   if nV1 = nV2 then
     VerStrCompare(Copy(newVersion, nE1 + 1, Length(newVersion)), Copy(oldVersion, nE2 + 1, Length(oldVersion)), comp)
-   else if nV1 > nV2 then
-     comp := 1
-   else if nV1 < nV2 then
-     comp := -1;
-  end
-  else
-    comp := 0;
+  else if nV1 > nV2 then
+    comp := 1
+  else if nV1 < nV2 then
+    comp := -1;
+ end
+ else
+   comp := 0;
+ end;
 end;
 
 end.

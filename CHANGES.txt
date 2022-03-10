@@ -1,3 +1,9 @@
+Version [unreleased]
+
+[Bugfix] When editing an unsaved document, the status panel will (correctly) display "[unsaved file]" now.
+
+-------------------------------
+
 Version 0.10.0
 2022-03-10
 
@@ -6,6 +12,7 @@ Version 0.10.0
 [Bugfix] Windows builds erroneously showed "-1" in the update status field.
 [Bugfix] Building a document without a macro package works now.
 
+-------------------------------
 
 Version 0.9.9.1
 2022-03-10
@@ -13,6 +20,7 @@ Version 0.9.9.1
 [Feature] macOS builds are working now.
 [Feature] First macOS release.
 
+-------------------------------
 
 Version 0.9.9.0
 2022-02-24
