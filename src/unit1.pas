@@ -205,8 +205,6 @@ begin
       btnDownloadGroffWindows.Enabled := False;
     end;
 
-    // Note that there is no version check (nor precompiled downloads :-))
-    // for non-Windows versions right now. Contributors welcome.
     reGroffStudioVersion := TRegExpr.Create('studio-win ([\d\.]+) (.*)$');
     reGroffStudioVersion.ModifierM := True;
     if reGroffStudioVersion.Exec(OnlineVersionsFile) then
