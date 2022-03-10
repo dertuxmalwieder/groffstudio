@@ -42,6 +42,7 @@ type
     btnBuild: TButton;
     btnDownloadGroffWindows: TButton;
     btnSaveSettings: TButton;
+    chkLogFile: TCheckBox;
     chkAutoSaveBuildSettings: TCheckBox;
     chkPdfMark: TCheckBox;
     chkRefer: TCheckBox;
@@ -172,6 +173,7 @@ begin
 
   if storeBuildSettings then
   begin
+       chkLogFile.Checked := iniStorage.ReadBoolean('BuildLogFile', False);
        cmbMacro.Text := iniStorage.ReadString('BuildChosenMacro', '[ select ]');
        chkChem.Checked := iniStorage.ReadBoolean('BuildUseChem', False);
        chkEqn.Checked := iniStorage.ReadBoolean('BuildUseEqn', False);
@@ -212,9 +214,7 @@ begin
       // Compare the two versions - ours and the online one:
       GroffHelpers.VerStrCompare(reGroffStudioVersion.Match[1], FileVerInfo.VersionStrings.Values['FileVersion'], HasVersionUpdate);
       if HasVersionUpdate > 0 then
-        MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available'
-      else
-        MainStatusBar.Panels[2].Text := IntToStr(HasVersionUpdate);
+        MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available';
     end else MainStatusBar.Panels[2].Text := '';
     {$ELSE}
     // Non-Windows platforms won't need some of that.
@@ -298,19 +298,20 @@ procedure TMainForm.btnBuildClick(Sender: TObject);
 var
   buildSuccess: Boolean;
   buildOpts: String;
+  logFileName: String;
   outputFileName: String;
 begin
   // Reset status display:
   MainStatusBar.Panels[1].Text := '';
 
   BuildWindow := TBuildStatusWindow.Create(Application);
-  BuildWindow.ShowModal;
+  BuildWindow.Show;
 
   // Build the parameters:
   buildOpts := 'groff';
 
   // - Macro:
-  buildOpts := buildOpts + ' -' + cmbMacro.SelText;
+  if cmbMacro.SelText <> '' then buildOpts := buildOpts + ' -' + cmbMacro.SelText;
 
   // - Enforce UTF-8:
   buildOpts := buildOpts + ' -Kutf8';
@@ -335,8 +336,11 @@ begin
   buildOpts := buildOpts + ' ' + currentGroffFilePath;
   buildOpts := buildOpts + ' > ' + outputFileName;
 
+  // - Log file:
+  if chkLogFile.Checked then logFileName := currentGroffFilePath + '.log';
+
   // Build:
-  buildSuccess := BuildWindow.BuildDocument(buildOpts);
+  buildSuccess := BuildWindow.BuildDocument(buildOpts, logFileName);
   if buildSuccess then
     MainStatusBar.Panels[1].Text := 'build successful'
   else
@@ -365,7 +369,11 @@ begin
       currentGroffFileName := ExtractFileName(odOpenGroffFile.FileName);
       SynEdit1.Lines.LoadFromFile(odOpenGroffFile.FileName);
 
-      if hasGroff then btnBuild.Enabled := True;
+      if hasGroff then
+      begin
+        btnBuild.Enabled := True;
+        chkLogFile.Enabled := True;
+      end;
 
       // Display the current file:
       MainStatusBar.Panels[0].Text := currentGroffFileName;
@@ -384,7 +392,10 @@ begin
     currentGroffFileName := ExtractFileName(currentGroffFilePath);
     SynEdit1.Lines.SaveToFile(sdSaveGroffFile.FileName);
 
-    if hasGroff then btnBuild.Enabled := True;
+    if hasGroff then begin
+      btnBuild.Enabled := True;
+      chkLogFile.Enabled := True;
+    end;
   end;
 
   // Remove the "Changed" mark:
@@ -396,6 +407,7 @@ procedure TMainForm.btnSaveSettingsClick(Sender: TObject);
 begin
   // Store the build settings:
   iniStorage.WriteString('BuildChosenMacro', cmbMacro.Text);
+  iniStorage.WriteBoolean('BuildLogFile', chkLogFile.Checked);
   iniStorage.WriteBoolean('BuildUseChem', chkChem.Checked);
   iniStorage.WriteBoolean('BuildUseEqn', chkEqn.Checked);
   iniStorage.WriteBoolean('BuildUseGrn', chkGrn.Checked);

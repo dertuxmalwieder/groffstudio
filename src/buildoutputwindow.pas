@@ -27,31 +27,31 @@ type
   { TBuildStatusWindow }
 
   TBuildStatusWindow = class(TForm)
-    mBuildOutput: TMemo;
+    Label1: TLabel;
   private
 
   public
-    function BuildDocument(CommandLine: String): Boolean;
+    function BuildDocument(CommandLine: String; LogFile: String): Boolean;
 
   end;
 
 var
   OutputText: String;
-  BuildStatusWindow: TBuildStatusWindow;
 
 implementation
 
 {$R *.lfm}
 
-function TBuildStatusWindow.BuildDocument(CommandLine: String): Boolean;
+function TBuildStatusWindow.BuildDocument(CommandLine: String; LogFile: String): Boolean;
 var
   p: TProcess;
-  AStringList: TStringList;
+  n: LongInt;
+  str: String;
+  lh: TextFile;
 begin
   p := TProcess.Create(nil);
-  p.Options := p.Options + [poWaitOnExit, poUsePipes];
+  p.Options := p.Options + [poUsePipes, poStderrToOutPut];
 
-  AStringList := TStringList.Create;
 {$IFDEF WINDOWS}
   p.Executable := 'cmd';
   p.Parameters.Add('/c');
@@ -63,23 +63,38 @@ begin
   p.Parameters.Add(CommandLine);
   p.Execute;
 
-  AStringList.LoadFromStream(p.Output);
+  if LogFile <> '' then
+  begin
+    AssignFile(lh, LogFile);
+    Rewrite(lh);
+
+    while p.Running do
+    begin
+      n := p.Output.Read(str, 2048);
+      if n > 0 then
+      begin
+        writeln(lh, str);
+      end
+      else Sleep(100);
+    end;
+
+    { We might have some buffer contents left. }
+    repeat
+      n := p.Output.Read(str, 2048);
+      if n > 0 then
+      begin
+        writeln(lh, str);
+      end;
+    until n <= 0;
+
+    CloseFile(lh);
+  end;
+
+  result := p.ExitStatus > 0;
   p.Free;
 
-  mBuildOutput.Text := AStringList.Text;
-  AStringList.Free;
-
-  if Length(mBuildOutput.Text) = 0 then begin
-    // We don't have any output. We can close the window.
-    BuildStatusWindow.Close;
-    result := True
-  end
-  else begin
-    // There was some output. Chances are that warnings occurred.
-    // Keep it shown.
-    // TODO: This does not always work well...
-    result := False
-  end;
+  { Close the status window: }
+  Close;
 end;
 
 end.

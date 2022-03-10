@@ -1,3 +1,12 @@
+Version 0.10.0
+2022-03-10
+
+[Feature] Log file creation.
+[Changed] Replaced the build output window by a status window.
+[Bugfix] Windows builds erroneously showed "-1" in the update status field.
+[Bugfix] Building a document without a macro package works now.
+
+
 Version 0.9.9.1
 2022-03-10
 
