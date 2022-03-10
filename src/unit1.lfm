@@ -1,11 +1,11 @@
 object MainForm: TMainForm
-  Left = 976
+  Left = 2381
   Height = 692
-  Top = 91
-  Width = 857
+  Top = 99
+  Width = 981
   Caption = 'groffstudio'
   ClientHeight = 692
-  ClientWidth = 857
+  ClientWidth = 981
   OnClose = FormClose
   OnCreate = FormCreate
   LCLVersion = '2.3.0.0'
@@ -13,7 +13,7 @@ object MainForm: TMainForm
     Left = 0
     Height = 23
     Top = 669
-    Width = 857
+    Width = 981
     Panels = <    
       item
         Text = 'file name with save status'
@@ -30,10 +30,10 @@ object MainForm: TMainForm
     SimplePanel = False
   end
   object ExtendedNotebook1: TExtendedNotebook
-    Left = 10
+    Left = 8
     Height = 662
     Top = 8
-    Width = 837
+    Width = 961
     ActivePage = tsEdit
     Anchors = [akTop, akLeft, akRight, akBottom]
     Style = tsFlatButtons
@@ -42,23 +42,23 @@ object MainForm: TMainForm
     object tsEdit: TTabSheet
       Caption = 'edit a groff document'
       ClientHeight = 631
-      ClientWidth = 829
+      ClientWidth = 953
       ParentFont = False
       object GroupBox1: TGroupBox
         Left = 10
-        Height = 74
-        Top = 552
-        Width = 809
+        Height = 66
+        Top = 560
+        Width = 933
         Align = alBottom
         BorderSpacing.Left = 10
         BorderSpacing.Right = 10
         BorderSpacing.Bottom = 5
         Caption = 'build'
-        ClientHeight = 54
-        ClientWidth = 805
+        ClientHeight = 46
+        ClientWidth = 929
         TabOrder = 0
         object Label1: TLabel
-          Left = 112
+          Left = 184
           Height = 15
           Top = -4
           Width = 72
@@ -66,9 +66,9 @@ object MainForm: TMainForm
           ParentColor = False
         end
         object cmbMacro: TComboBox
-          Left = 112
+          Left = 184
           Height = 23
-          Top = 20
+          Top = 16
           Width = 100
           ItemHeight = 15
           Items.Strings = (
@@ -82,7 +82,7 @@ object MainForm: TMainForm
           Text = '[ select ]'
         end
         object Label2: TLabel
-          Left = 682
+          Left = 806
           Height = 15
           Top = -4
           Width = 78
@@ -91,9 +91,9 @@ object MainForm: TMainForm
           ParentColor = False
         end
         object rdPs: TRadioButton
-          Left = 684
+          Left = 807
           Height = 19
-          Top = 24
+          Top = 16
           Width = 71
           Anchors = [akTop, akRight]
           Caption = 'PostScript'
@@ -101,9 +101,9 @@ object MainForm: TMainForm
           TabOrder = 1
         end
         object rdPdf: TRadioButton
-          Left = 764
+          Left = 887
           Height = 19
-          Top = 24
+          Top = 16
           Width = 39
           Anchors = [akTop, akRight]
           Caption = 'PDF'
@@ -111,7 +111,7 @@ object MainForm: TMainForm
           TabOrder = 2
         end
         object Label3: TLabel
-          Left = 300
+          Left = 424
           Height = 15
           Top = -4
           Width = 76
@@ -120,61 +120,61 @@ object MainForm: TMainForm
           ParentColor = False
         end
         object chkEqn: TCheckBox
-          Left = 358
+          Left = 480
           Height = 19
-          Top = 24
+          Top = 16
           Width = 38
           Anchors = [akTop, akRight]
           Caption = 'eqn'
           TabOrder = 3
         end
         object chkPic: TCheckBox
-          Left = 444
+          Left = 566
           Height = 19
-          Top = 24
+          Top = 16
           Width = 34
           Anchors = [akTop, akRight]
           Caption = 'pic'
           TabOrder = 4
         end
         object chkTbl: TCheckBox
-          Left = 532
+          Left = 654
           Height = 19
-          Top = 24
+          Top = 16
           Width = 32
           Anchors = [akTop, akRight]
           Caption = 'tbl'
           TabOrder = 5
         end
         object chkGrn: TCheckBox
-          Left = 402
+          Left = 524
           Height = 19
-          Top = 24
+          Top = 16
           Width = 36
           Anchors = [akTop, akRight]
           Caption = 'grn'
           TabOrder = 6
         end
         object chkChem: TCheckBox
-          Left = 302
+          Left = 424
           Height = 19
-          Top = 24
+          Top = 16
           Width = 48
           Anchors = [akTop, akRight]
           Caption = 'chem'
           TabOrder = 7
         end
         object chkRefer: TCheckBox
-          Left = 484
+          Left = 606
           Height = 19
-          Top = 24
+          Top = 16
           Width = 42
           Anchors = [akTop, akRight]
           Caption = 'refer'
           TabOrder = 8
         end
         object Label4: TLabel
-          Left = 583
+          Left = 707
           Height = 15
           Top = -4
           Width = 34
@@ -183,9 +183,9 @@ object MainForm: TMainForm
           ParentColor = False
         end
         object chkPdfMark: TCheckBox
-          Left = 585
+          Left = 708
           Height = 19
-          Top = 24
+          Top = 16
           Width = 63
           Anchors = [akTop, akRight]
           Caption = 'Pdfmark'
@@ -193,9 +193,9 @@ object MainForm: TMainForm
           TabOrder = 9
         end
         object btnBuild: TButton
-          Left = 1
+          Left = 0
           Height = 29
-          Top = 0
+          Top = 10
           Width = 75
           Caption = 'build'
           Color = clLime
@@ -206,20 +206,20 @@ object MainForm: TMainForm
           TabOrder = 10
         end
         object chkLogFile: TCheckBox
-          Left = 8
+          Left = 80
           Height = 19
           Hint = 'If enabled, a log file containing the groff output will be placed alongside the source document.'
-          Top = 32
-          Width = 80
-          Caption = 'with log file'
+          Top = 16
+          Width = 68
+          Caption = 'log to file'
           Enabled = False
           TabOrder = 11
         end
       end
       object btnSaveGroff: TButton
-        Left = 744
+        Left = 868
         Height = 28
-        Top = 512
+        Top = 528
         Width = 75
         Anchors = [akRight, akBottom]
         Caption = 'save'
@@ -229,9 +229,9 @@ object MainForm: TMainForm
         TabOrder = 1
       end
       object btnLoadGroff: TButton
-        Left = 663
+        Left = 787
         Height = 28
-        Top = 512
+        Top = 528
         Width = 75
         Anchors = [akRight, akBottom]
         Caption = 'load'
@@ -241,9 +241,9 @@ object MainForm: TMainForm
         TabOrder = 2
       end
       object Label5: TLabel
-        Left = 207
+        Left = 331
         Height = 15
-        Top = 525
+        Top = 541
         Width = 438
         Anchors = [akRight, akBottom]
         Caption = 'note that everything build-related will be stored in the document''s storage directory'
@@ -254,9 +254,9 @@ object MainForm: TMainForm
       end
       inline SynEdit1: TSynEdit
         Left = 10
-        Height = 507
+        Height = 523
         Top = 0
-        Width = 809
+        Width = 933
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.CharSet = 4
         Font.Height = -13
@@ -758,7 +758,7 @@ object MainForm: TMainForm
     object tsSettings: TTabSheet
       Caption = 'groffstudio settings'
       ClientHeight = 631
-      ClientWidth = 829
+      ClientWidth = 953
       object chkAutoSaveBuildSettings: TCheckBox
         Left = 0
         Height = 19
@@ -768,7 +768,7 @@ object MainForm: TMainForm
         TabOrder = 0
       end
       object btnSaveSettings: TButton
-        Left = 740
+        Left = 864
         Height = 25
         Top = 600
         Width = 91
@@ -789,19 +789,19 @@ object MainForm: TMainForm
     object tsGroff: TTabSheet
       Caption = 'groff version'
       ClientHeight = 631
-      ClientWidth = 829
+      ClientWidth = 953
       object GroupBox2: TGroupBox
         Left = 20
         Height = 57
         Top = 566
-        Width = 789
+        Width = 913
         Align = alBottom
         BorderSpacing.Left = 20
         BorderSpacing.Right = 20
         BorderSpacing.Bottom = 8
         Caption = 'groff for Windows'
         ClientHeight = 37
-        ClientWidth = 785
+        ClientWidth = 909
         TabOrder = 0
         object Label6: TLabel
           Left = 8
@@ -815,7 +815,7 @@ object MainForm: TMainForm
           Left = 136
           Height = 15
           Top = 8
-          Width = 552
+          Width = 676
           Anchors = [akTop, akLeft, akRight]
           BorderStyle = bsNone
           Enabled = False
@@ -823,7 +823,7 @@ object MainForm: TMainForm
           Text = 'fetching ...'
         end
         object btnDownloadGroffWindows: TButton
-          Left = 696
+          Left = 820
           Height = 25
           Top = 5
           Width = 80
@@ -835,9 +835,9 @@ object MainForm: TMainForm
       end
       object Label7: TLabel
         Left = 8
-        Height = 30
+        Height = 15
         Top = 8
-        Width = 817
+        Width = 941
         Anchors = [akTop, akLeft, akRight]
         Caption = 'as you might guess, groffstudio requires a working installation of groff. this page performs the basic checks for you. note that on windows, everything is harder than it should. :-)'
         Constraints.MaxHeight = 582
@@ -856,7 +856,7 @@ object MainForm: TMainForm
         Left = 144
         Height = 15
         Top = 56
-        Width = 681
+        Width = 805
         Anchors = [akTop, akLeft, akRight]
         BorderStyle = bsNone
         Enabled = False
@@ -866,7 +866,7 @@ object MainForm: TMainForm
         Left = 8
         Height = 45
         Top = 112
-        Width = 816
+        Width = 940
         Anchors = [akTop, akLeft, akRight]
         Caption = 'groff was not found. in order to use groffstudio, you absolutely need groff in your PATH variable. on unix and unix-like systems, you''ll need to edit the $PATH variable. on windows, i warmly recommend the Rapid Environment Editor for that.'#13#10'please exit groffstudio at your nearest convenience and adjust your PATH variables. then try again.'
         Font.Color = clRed
@@ -879,7 +879,7 @@ object MainForm: TMainForm
         Left = 144
         Height = 15
         Top = 77
-        Width = 681
+        Width = 805
         Anchors = [akTop, akLeft, akRight]
         BorderStyle = bsNone
         Enabled = False
@@ -897,7 +897,7 @@ object MainForm: TMainForm
     object tsAbout: TTabSheet
       Caption = 'about groffstudio'
       ClientHeight = 631
-      ClientWidth = 829
+      ClientWidth = 953
       object lblAboutProductName: TLabel
         Left = 0
         Height = 61
@@ -951,7 +951,7 @@ object MainForm: TMainForm
         Left = 0
         Height = 418
         Top = 216
-        Width = 836
+        Width = 960
         Anchors = [akTop, akLeft, akRight]
         ScrollBars = ssAutoBoth
         TabOrder = 0
