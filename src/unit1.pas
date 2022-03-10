@@ -193,6 +193,7 @@ begin
     FileVerInfo.ReadFileInfo;
     edtGroffStudioInstalledVersion.Text := FileVerInfo.VersionStrings.Values['FileVersion'];
     lblAboutProductName.Caption := FileVerInfo.VersionStrings.Values['ProductName'] + ' ' + FileVerInfo.VersionStrings.Values['FileVersion'];
+    MainStatusBar.Panels[2].Text := '';
 
     {$IFDEF WINDOWS}
     OnlineVersionsFile := TFPCustomHTTPClient.SimpleGet('https://groff.tuxproject.de/updates/versions.txt');
@@ -215,12 +216,11 @@ begin
       GroffHelpers.VerStrCompare(reGroffStudioVersion.Match[1], FileVerInfo.VersionStrings.Values['FileVersion'], HasVersionUpdate);
       if HasVersionUpdate > 0 then
         MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available';
-    end else MainStatusBar.Panels[2].Text := '';
+    end;
     {$ELSE}
     // Non-Windows platforms won't need some of that.
     {$IFDEF DARWIN}
     // What's the latest available version?
-    MainStatusBar.Panels[2].Text := '';
     try
       HTTPClient := TFPHTTPClient.Create(Nil);
       HTTPClient.OnGetSocketHandler := @GetSocketHandler;

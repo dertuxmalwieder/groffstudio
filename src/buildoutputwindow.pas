@@ -20,7 +20,7 @@ unit BuildOutputWindow;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Process;
+  Classes, SysUtils, Forms, StdCtrls, Process;
 
 type
 

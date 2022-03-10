@@ -1,6 +1,8 @@
-Version [unreleased]
+Version 0.10.1
+2022-03-10
 
 [Bugfix] When editing an unsaved document, the status panel will (correctly) display "[unsaved file]" now.
+[Bugfix] Windows builds still had a seemingly broken update check. Fixed the status display.
 
 -------------------------------
 

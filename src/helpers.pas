@@ -57,7 +57,6 @@ begin
  end
  else
    comp := 0;
- end;
 end;
 
 end.
