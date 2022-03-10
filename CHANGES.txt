@@ -1,3 +1,10 @@
+Version 0.9.9.1
+2022-03-10
+
+[Feature] macOS builds are working now.
+[Feature] First macOS release.
+
+
 Version 0.9.9.0
 2022-02-24
 

@@ -25,8 +25,8 @@ uses
   RegExpr, LCLIntf, LCLType, IniPropStorage, Process, Helpers, fileinfo,
   {$IF DEFINED(WINDOWS)}
   winpeimagereader,
-  {$ELSEIF DEFINED(MACOS)}
-  machoreader,
+  {$ELSEIF DEFINED(DARWIN)}
+  machoreader, ssockets, sslsockets, sslbase,
   {$ELSEIF DEFINED(LINUX)}
   elfreader,
   {$ENDIF}
@@ -101,13 +101,17 @@ type
     procedure rdPdfChange(Sender: TObject);
     procedure rdPsChange(Sender: TObject);
     procedure SynEdit1Change(Sender: TObject);
+{$IFDEF DARWIN}
+    procedure GetSocketHandler(Sender: TObject; const UseSSL: Boolean; out AHandler: TSocketHandler);
+{$ENDIF}
   private
     var currentGroffFilePath: String;
     var currentGroffFileName: String;
     var hasGroff: Boolean;
     var unsavedChanges: Boolean;
+{$IFDEF WINDOWS}
     var latestGroffWindowsUrl: String;
-
+{$ENDIF}
     var storeBuildSettings: Boolean;
   public
 
@@ -127,11 +131,17 @@ procedure TMainForm.FormCreate(Sender: TObject);
 var
   GroffOutputVersion: String;
   OnlineVersionsFile: String;
-  reGroffVersion, reGroffStudioVersion: TRegExpr;
+  {$IFDEF WINDOWS}
+  reGroffVersion: TRegExpr;
+  {$ENDIF}
+  reGroffStudioVersion: TRegExpr;
   FileVerInfo: TFileVersionInfo;
   HasVersionUpdate: Integer;
   GroffHelpers: TGroffHelpers;
   ResStream: TResourceStream;
+  {$IFDEF DARWIN}
+  HTTPClient: TFPHttpClient;
+  {$ENDIF}
 begin
   // What's the current running groff version?
   if RunCommand('troff', ['--version'], GroffOutputVersion) then
@@ -174,7 +184,6 @@ begin
        rdPdf.Checked := iniStorage.ReadBoolean('BuildToPDF', False);
   end;
 
-  {$IFDEF WINDOWS}
   // What's the latest available version?
   FileVerInfo := TFileVersionInfo.Create(nil);
 
@@ -183,6 +192,7 @@ begin
     edtGroffStudioInstalledVersion.Text := FileVerInfo.VersionStrings.Values['FileVersion'];
     lblAboutProductName.Caption := FileVerInfo.VersionStrings.Values['ProductName'] + ' ' + FileVerInfo.VersionStrings.Values['FileVersion'];
 
+    {$IFDEF WINDOWS}
     OnlineVersionsFile := TFPCustomHTTPClient.SimpleGet('https://groff.tuxproject.de/updates/versions.txt');
     reGroffVersion := TRegExpr.Create('groff-win ([\d\.]+) (.*)$');
     reGroffVersion.ModifierM := True;
@@ -208,15 +218,37 @@ begin
       else
         MainStatusBar.Panels[2].Text := IntToStr(HasVersionUpdate);
     end else MainStatusBar.Panels[2].Text := '';
+    {$ELSE}
+    // Non-Windows platforms won't need some of that.
+    {$IFDEF DARWIN}
+    // What's the latest available version?
+    MainStatusBar.Panels[2].Text := '';
+    try
+      HTTPClient := TFPHTTPClient.Create(Nil);
+      HTTPClient.OnGetSocketHandler := @GetSocketHandler;
+      OnlineVersionsFile := HTTPClient.SimpleGet('https://groff.tuxproject.de/updates/versions.txt');
+
+      reGroffStudioVersion := TRegExpr.Create('studio-macos ([\d\.]+) (.*)$');
+      reGroffStudioVersion.ModifierM := True;
+      if reGroffStudioVersion.Exec(OnlineVersionsFile) then
+      begin
+        // Compare the two versions - ours and the online one:
+        GroffHelpers.VerStrCompare(reGroffStudioVersion.Match[1], FileVerInfo.VersionStrings.Values['FileVersion'], HasVersionUpdate);
+        if HasVersionUpdate > 0 then
+          MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available'
+        else
+          MainStatusBar.Panels[2].Text := IntToStr(HasVersionUpdate);
+      end;
+    finally
+      HTTPClient.Free;
+    end;
+    {$ENDIF}
+    edtOnlineGroffVersionWindows.Text := 'n/a';
+    btnDownloadGroffWindows.Enabled := False;
+  {$ENDIF}
   finally
     FileVerInfo.Free;
   end;
-  {$ELSE}
-  // Non-Windows platforms won't need all that.
-  edtOnlineGroffVersionWindows.Text := 'n/a';
-  btnDownloadGroffWindows.Enabled := False;
-  MainStatusBar.Panels[2].Text := '';
-  {$ENDIF}
 
   // Loaded file display
   MainStatusBar.Panels[0].Text := '';
@@ -394,6 +426,17 @@ begin
     if Reply = IDYES then SynEdit1.Lines.SaveToFile(currentGroffFilePath);
   end;
 end;
+
+{$IFDEF DARWIN}
+// Fix HTTPS on macOS:
+procedure TMainForm.GetSocketHandler(Sender: TObject; const UseSSL: Boolean; out AHandler: TSocketHandler);
+begin
+  if UseSSL then begin
+    AHandler := TSSLSocketHandler.Create;
+    TSSLSocketHandler(AHandler).SSLType := stTLSv1_2;
+  end else AHandler := TSocketHandler.Create;
+end;
+{$ENDIF}
 
 end.
 
