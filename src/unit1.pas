@@ -42,6 +42,7 @@ type
     btnBuild: TButton;
     btnDownloadGroffWindows: TButton;
     btnSaveSettings: TButton;
+    chkUpdateCheckOnStart: TCheckBox;
     chkLogFile: TCheckBox;
     chkAutoSaveBuildSettings: TCheckBox;
     chkPdfMark: TCheckBox;
@@ -114,6 +115,7 @@ type
     var latestGroffWindowsUrl: String;
 {$ENDIF}
     var storeBuildSettings: Boolean;
+    var updateCheck: Boolean;
   public
 
   end;
@@ -171,6 +173,9 @@ begin
   storeBuildSettings := iniStorage.ReadBoolean('AutoSaveBuildSettings', False);
   chkAutoSaveBuildSettings.Checked := storeBuildSettings;
 
+  updateCheck := iniStorage.ReadBoolean('UpdateCheckOnStart', False);
+  chkUpdateCheckOnStart.Checked := updateCheck;
+
   if storeBuildSettings then
   begin
        chkLogFile.Checked := iniStorage.ReadBoolean('BuildLogFile', False);
@@ -196,49 +201,64 @@ begin
     MainStatusBar.Panels[2].Text := '';
 
     {$IFDEF WINDOWS}
-    OnlineVersionsFile := TFPCustomHTTPClient.SimpleGet('https://groff.tuxproject.de/updates/versions.txt');
-    reGroffVersion := TRegExpr.Create('groff-win ([\d\.]+) (.*)$');
-    reGroffVersion.ModifierM := True;
-    if reGroffVersion.Exec(OnlineVersionsFile) then
+    if updateCheck then
     begin
-      edtOnlineGroffVersionWindows.Text := reGroffVersion.Match[1];
-      latestGroffWindowsUrl := reGroffVersion.Match[2];
-    end else begin
-      edtOnlineGroffVersionWindows.Text := 'error';
-      btnDownloadGroffWindows.Enabled := False;
-    end;
+      OnlineVersionsFile := TFPCustomHTTPClient.SimpleGet('https://groff.tuxproject.de/updates/versions.txt');
 
-    reGroffStudioVersion := TRegExpr.Create('studio-win ([\d\.]+) (.*)$');
-    reGroffStudioVersion.ModifierM := True;
-    if reGroffStudioVersion.Exec(OnlineVersionsFile) then
-    begin
-      // Compare the two versions - ours and the online one:
-      GroffHelpers.VerStrCompare(reGroffStudioVersion.Match[1], FileVerInfo.VersionStrings.Values['FileVersion'], HasVersionUpdate);
-      if HasVersionUpdate > 0 then
-        MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available';
-    end;
-    {$ELSE}
-    // Non-Windows platforms won't need some of that.
-    {$IFDEF DARWIN}
-    // What's the latest available version?
-    try
-      HTTPClient := TFPHTTPClient.Create(Nil);
-      HTTPClient.OnGetSocketHandler := @GetSocketHandler;
-      OnlineVersionsFile := HTTPClient.SimpleGet('https://groff.tuxproject.de/updates/versions.txt');
+      // 1. groff update check
+      reGroffVersion := TRegExpr.Create('groff-win ([\d\.]+) (.*)$');
+      reGroffVersion.ModifierM := True;
+      if reGroffVersion.Exec(OnlineVersionsFile) then
+      begin
+        edtOnlineGroffVersionWindows.Text := reGroffVersion.Match[1];
+        latestGroffWindowsUrl := reGroffVersion.Match[2];
+      end else begin
+        edtOnlineGroffVersionWindows.Text := 'error';
+        btnDownloadGroffWindows.Enabled := False;
+      end;
 
-      reGroffStudioVersion := TRegExpr.Create('studio-macos ([\d\.]+) (.*)$');
+      // 2. groffstudio update check
+      reGroffStudioVersion := TRegExpr.Create('studio-win ([\d\.]+) (.*)$');
       reGroffStudioVersion.ModifierM := True;
       if reGroffStudioVersion.Exec(OnlineVersionsFile) then
       begin
         // Compare the two versions - ours and the online one:
         GroffHelpers.VerStrCompare(reGroffStudioVersion.Match[1], FileVerInfo.VersionStrings.Values['FileVersion'], HasVersionUpdate);
         if HasVersionUpdate > 0 then
-          MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available'
-        else
-          MainStatusBar.Panels[2].Text := IntToStr(HasVersionUpdate);
+          MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available';
+      end;
+    end else begin
+        edtOnlineGroffVersionWindows.Text := 'n/a';
+        btnDownloadGroffWindows.Enabled := False;
+    end;
+    {$ELSE}
+    // Non-Windows platforms won't need some of that.
+    {$IFDEF DARWIN}
+    // What's the latest available version?
+    try
+      if updateCheck then
+      begin
+        HTTPClient := TFPHTTPClient.Create(Nil);
+        HTTPClient.OnGetSocketHandler := @GetSocketHandler;
+        OnlineVersionsFile := HTTPClient.SimpleGet('https://groff.tuxproject.de/updates/versions.txt');
+
+        reGroffStudioVersion := TRegExpr.Create('studio-macos ([\d\.]+) (.*)$');
+        reGroffStudioVersion.ModifierM := True;
+        if reGroffStudioVersion.Exec(OnlineVersionsFile) then
+        begin
+          // Compare the two versions - ours and the online one:
+          GroffHelpers.VerStrCompare(reGroffStudioVersion.Match[1], FileVerInfo.VersionStrings.Values['FileVersion'], HasVersionUpdate);
+          if HasVersionUpdate > 0 then
+            MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available'
+          else
+            MainStatusBar.Panels[2].Text := IntToStr(HasVersionUpdate);
+        end;
+      end else begin
+        edtOnlineGroffVersionWindows.Text := 'n/a';
+        btnDownloadGroffWindows.Enabled := False;
       end;
     finally
-      HTTPClient.Free;
+      if updateCheck then HTTPClient.Free;
     end;
     {$ENDIF}
     edtOnlineGroffVersionWindows.Text := 'n/a';
@@ -420,6 +440,7 @@ begin
 
   // Store the IDE settings:
   iniStorage.WriteBoolean('AutoSaveBuildSettings', chkAutoSaveBuildSettings.Checked);
+  iniStorage.WriteBoolean('AutoUpdateCheck', chkUpdateCheckOnStart.Checked);
 
   iniStorage.Save;
 end;

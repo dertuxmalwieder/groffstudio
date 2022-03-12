@@ -1,6 +1,9 @@
-Version [next]
+Version 0.11.0
+2022-03-12
 
+[Feature] The update check was made optional (default: false).
 [Changed] Rearranged the build options panel so it won't look as misaligned as it actually was.
+[Changed] The required SSL libraries are shipped with the Windows package now.
 
 -------------------------------
 
