@@ -21,12 +21,12 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
-  ExtCtrls, Buttons, ExtendedNotebook, SynEdit, fphttpclient, opensslsockets,
+  ExtCtrls, Buttons, ExtendedNotebook, SynEdit, fphttpclient,
   RegExpr, LCLIntf, LCLType, IniPropStorage, Process, Helpers, fileinfo,
   {$IF DEFINED(WINDOWS)}
-  winpeimagereader,
+  winpeimagereader, opensslsockets,
   {$ELSEIF DEFINED(DARWIN)}
-  machoreader, ssockets, sslsockets, sslbase,
+  machoreader, ssockets, sslsockets, sslbase, opensslsockets,
   {$ELSEIF DEFINED(LINUX)}
   elfreader,
   {$ENDIF}
@@ -173,8 +173,14 @@ begin
   storeBuildSettings := iniStorage.ReadBoolean('AutoSaveBuildSettings', False);
   chkAutoSaveBuildSettings.Checked := storeBuildSettings;
 
+{$IF DEFINED(LINUX) OR DEFINED(BSD)}
+  // On platforms which probably use a package manager (currently, Linux and
+  // BSDs), the "update check" checkbox is disabled.
+  chkUpdateCheckOnStart.Enabled := False;
+{$ELSE}
   updateCheck := iniStorage.ReadBoolean('UpdateCheckOnStart', False);
   chkUpdateCheckOnStart.Checked := updateCheck;
+{$ENDIF}
 
   if storeBuildSettings then
   begin
@@ -310,6 +316,7 @@ end;
 procedure TMainForm.btnDownloadGroffWindowsClick(Sender: TObject);
 begin
    {$IFDEF WINDOWS}
+   // On other systems, the button is disabled anyway.
    OpenURL(latestGroffWindowsUrl);
    {$ENDIF}
 end;
@@ -454,7 +461,7 @@ begin
   with Application do begin
     BoxStyle := MB_ICONQUESTION + MB_YESNO;
     Reply := MessageBox('Do you want to save the document first?', 'UnsavedChanges', BoxStyle);
-    if Reply = IDYES then SynEdit1.Lines.SaveToFile(currentGroffFilePath);
+    if Reply = IDYES then btnSaveGroffClick(Sender);
   end;
 end;
 

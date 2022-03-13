@@ -1,3 +1,10 @@
+Version [next]
+
+[Changed] On platforms which probably use a package manager (currently, Linux and BSDs), the "update check" checkbox is disabled and the related libraries are not referenced.
+[Improved] When exiting groffstudio, the Save function from the "save" button is reused.
+
+-------------------------------
+
 Version 0.11.0
 2022-03-12
 
