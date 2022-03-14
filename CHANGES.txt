@@ -1,5 +1,7 @@
-Version [next]
+Version 0.12.0
+2022-03-14
 
+[Feature] If the installed version of troff is not detected as groff, a warning is displayed.
 [Changed] On platforms which probably use a package manager (currently, Linux and BSDs), the "update check" checkbox is disabled and the related libraries are not referenced.
 [Improved] When exiting groffstudio, the Save function from the "save" button is reused.
 [Changed] Less capital letters.

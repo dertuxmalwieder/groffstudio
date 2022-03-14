@@ -150,6 +150,10 @@ begin
   if RunCommand('troff', ['--version'], GroffOutputVersion) then
   begin
     edtGroffInstalledVersion.Text := GroffOutputVersion;
+    if pos('GNU', GroffOutputVersion) = 0 then
+       ShowMessage('groffstudio thinks that your installed version of troff is not GNU troff.' + LineEnding +
+       'If this is correct, you are advised to fix this before continuing.' + LineEnding +
+       'If it is an error, please tell me so I can improve this detection.');
     hasGroff := True;
   end else begin
     edtGroffInstalledVersion.Text := 'n/a';
