@@ -6,6 +6,7 @@ object MainForm: TMainForm
   Caption = 'groffstudio'
   ClientHeight = 692
   ClientWidth = 981
+  DefaultMonitor = dmPrimary
   OnClose = FormClose
   OnCreate = FormCreate
   LCLVersion = '2.3.0.0'
