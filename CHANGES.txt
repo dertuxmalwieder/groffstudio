@@ -1,3 +1,10 @@
+Version [next]
+
+[Feature] Support for hdtbl.
+[Changed] Build extras and build preprocessors are now listed in a multi-select box.
+
+-------------------------------
+
 Version 0.12.0
 2022-03-14
 

@@ -21,8 +21,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
-  ExtCtrls, Buttons, ExtendedNotebook, SynEdit, fphttpclient,
-  RegExpr, LCLIntf, LCLType, IniPropStorage, Process, Helpers, fileinfo,
+  ExtCtrls, Buttons, ExtendedNotebook, SynEdit, fphttpclient, RegExpr, LCLIntf,
+  LCLType, IniPropStorage, ComboEx, Process, Helpers, fileinfo,
   {$IF DEFINED(WINDOWS)}
   winpeimagereader, opensslsockets,
   {$ELSEIF DEFINED(DARWIN)}
@@ -42,16 +42,11 @@ type
     btnBuild: TButton;
     btnDownloadGroffWindows: TButton;
     btnSaveSettings: TButton;
+    chkBoxExtras: TCheckComboBox;
+    chkBoxPreprocessors: TCheckComboBox;
     chkUpdateCheckOnStart: TCheckBox;
     chkLogFile: TCheckBox;
     chkAutoSaveBuildSettings: TCheckBox;
-    chkPdfMark: TCheckBox;
-    chkRefer: TCheckBox;
-    chkChem: TCheckBox;
-    chkGrn: TCheckBox;
-    chkTbl: TCheckBox;
-    chkPic: TCheckBox;
-    chkEqn: TCheckBox;
     cmbMacro: TComboBox;
     edtGroffInstalledVersion: TEdit;
     edtGroffstudioInstalledVersion: TEdit;
@@ -100,8 +95,6 @@ type
     procedure lblFossilRepoClick(Sender: TObject);
     procedure lblGithubRepoClick(Sender: TObject);
     procedure lblWebsiteClick(Sender: TObject);
-    procedure rdPdfChange(Sender: TObject);
-    procedure rdPsChange(Sender: TObject);
     procedure SynEdit1Change(Sender: TObject);
 {$IFDEF DARWIN}
     procedure GetSocketHandler(Sender: TObject; const UseSSL: Boolean; out AHandler: TSocketHandler);
@@ -190,13 +183,14 @@ begin
   begin
        chkLogFile.Checked := iniStorage.ReadBoolean('BuildLogFile', False);
        cmbMacro.Text := iniStorage.ReadString('BuildChosenMacro', '[ select ]');
-       chkChem.Checked := iniStorage.ReadBoolean('BuildUseChem', False);
-       chkEqn.Checked := iniStorage.ReadBoolean('BuildUseEqn', False);
-       chkGrn.Checked := iniStorage.ReadBoolean('BuildUseGrn', False);
-       chkPic.Checked := iniStorage.ReadBoolean('BuildUsePic', False);
-       chkRefer.Checked := iniStorage.ReadBoolean('BuildUseRefer', False);
-       chkTbl.Checked := iniStorage.ReadBoolean('BuildUseTbl', False);
-       chkPdfMark.Checked := iniStorage.ReadBoolean('BuildUsePdfMark', False);
+       chkBoxPreprocessors.Checked[0] := iniStorage.ReadBoolean('BuildUseChem', False);
+       chkBoxPreprocessors.Checked[1] := iniStorage.ReadBoolean('BuildUseEqn', False);
+       chkBoxPreprocessors.Checked[2] := iniStorage.ReadBoolean('BuildUseGrn', False);
+       chkBoxPreprocessors.Checked[3] := iniStorage.ReadBoolean('BuildUsePic', False);
+       chkBoxPreprocessors.Checked[4] := iniStorage.ReadBoolean('BuildUseRefer', False);
+       chkBoxPreprocessors.Checked[5] := iniStorage.ReadBoolean('BuildUseTbl', False);
+       chkBoxExtras.Checked[0] := iniStorage.ReadBoolean('BuildUseHdtbl', False);
+       chkBoxExtras.Checked[1] := iniStorage.ReadBoolean('BuildUsePdfMark', False);
        rdPs.Checked := iniStorage.ReadBoolean('BuildToPostscript', False);
        rdPdf.Checked := iniStorage.ReadBoolean('BuildToPDF', False);
   end;
@@ -300,16 +294,6 @@ begin
   OpenURL('https://groff.tuxproject.de');
 end;
 
-procedure TMainForm.rdPdfChange(Sender: TObject);
-begin
-  chkPdfMark.Enabled := True;
-end;
-
-procedure TMainForm.rdPsChange(Sender: TObject);
-begin
-  chkPdfMark.Enabled := False;
-end;
-
 procedure TMainForm.SynEdit1Change(Sender: TObject);
 begin
   // Set the "Changed" mark:
@@ -348,17 +332,19 @@ begin
   buildOpts := buildOpts + ' -Kutf8';
 
   // - Preprocessors:
-  if chkChem.Checked then   buildOpts := buildOpts + ' -chem';
-  if chkEqn.Checked then    buildOpts := buildOpts + ' -eqn';
-  if chkGrn.Checked then    buildOpts := buildOpts + ' -grn';
-  if chkPic.Checked then    buildOpts := buildOpts + ' -pic';
-  if chkRefer.Checked then  buildOpts := buildOpts + ' -refer';
-  if chkTbl.Checked then    buildOpts := buildOpts + ' -tbl';
+  if chkBoxPreprocessors.Checked[0] then   buildOpts := buildOpts + ' -chem';
+  if chkBoxPreprocessors.Checked[1] then   buildOpts := buildOpts + ' -eqn';
+  if chkBoxPreprocessors.Checked[2] then   buildOpts := buildOpts + ' -grn';
+  if chkBoxPreprocessors.Checked[3] then   buildOpts := buildOpts + ' -pic';
+  if chkBoxPreprocessors.Checked[4] then   buildOpts := buildOpts + ' -refer';
+  if chkBoxPreprocessors.Checked[5] then   buildOpts := buildOpts + ' -tbl';
+
+  if chkBoxExtras.Checked[0] then  buildOpts := buildOpts + ' -mhdtbl';
 
   // - PDF-specifics:
   if rdPdf.Checked then begin
     buildOpts := buildOpts + ' -Tpdf';
-    if chkPdfMark.Checked then buildOpts := buildOpts + ' -mpdfmark';
+    if chkBoxExtras.Checked[1] then buildOpts := buildOpts + ' -mpdfmark';
     outputFileName := currentGroffFilePath + '.pdf';
   end
   else outputFileName := currentGroffFilePath + '.ps';
@@ -439,13 +425,14 @@ begin
   // Store the build settings:
   iniStorage.WriteString('BuildChosenMacro', cmbMacro.Text);
   iniStorage.WriteBoolean('BuildLogFile', chkLogFile.Checked);
-  iniStorage.WriteBoolean('BuildUseChem', chkChem.Checked);
-  iniStorage.WriteBoolean('BuildUseEqn', chkEqn.Checked);
-  iniStorage.WriteBoolean('BuildUseGrn', chkGrn.Checked);
-  iniStorage.WriteBoolean('BuildUsePic', chkPic.Checked);
-  iniStorage.WriteBoolean('BuildUseRefer', chkRefer.Checked);
-  iniStorage.WriteBoolean('BuildUseTbl', chkTbl.Checked);
-  iniStorage.WriteBoolean('BuildUsePdfMark', chkPdfMark.Checked);
+  iniStorage.WriteBoolean('BuildUseChem', chkBoxPreprocessors.Checked[0]);
+  iniStorage.WriteBoolean('BuildUseEqn', chkBoxPreprocessors.Checked[1]);
+  iniStorage.WriteBoolean('BuildUseGrn', chkBoxPreprocessors.Checked[2]);
+  iniStorage.WriteBoolean('BuildUsePic', chkBoxPreprocessors.Checked[3]);
+  iniStorage.WriteBoolean('BuildUseRefer', chkBoxPreprocessors.Checked[4]);
+  iniStorage.WriteBoolean('BuildUseTbl', chkBoxPreprocessors.Checked[5]);
+  iniStorage.WriteBoolean('BuildUseHdtbl', chkBoxExtras.Checked[0]);
+  iniStorage.WriteBoolean('BuildUsePdfMark', chkBoxExtras.Checked[1]);
   iniStorage.WriteBoolean('BuildToPostscript', rdPs.Checked);
   iniStorage.WriteBoolean('BuildToPDF', rdPDF.Checked);
 
