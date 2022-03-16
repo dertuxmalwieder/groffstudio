@@ -2,6 +2,7 @@ Version [next]
 
 [Feature] Support for hdtbl.
 [Changed] Build extras and build preprocessors are now listed in a multi-select box.
+[Improved] If no error has occurred, the log file will contain a success message.
 
 -------------------------------
 

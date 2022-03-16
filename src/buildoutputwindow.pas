@@ -45,7 +45,7 @@ implementation
 function TBuildStatusWindow.BuildDocument(CommandLine: String; LogFile: String): Boolean;
 var
   p: TProcess;
-  n: LongInt;
+  n, total: LongInt;
   str: String;
   lh: TextFile;
 begin
@@ -68,9 +68,12 @@ begin
     AssignFile(lh, LogFile);
     Rewrite(lh);
 
+    total := 0;
+
     while p.Running do
     begin
       n := p.Output.Read(str, 2048);
+      total := total + n;
       if n > 0 then
       begin
         writeln(lh, str);
@@ -81,11 +84,14 @@ begin
     { We might have some buffer contents left. }
     repeat
       n := p.Output.Read(str, 2048);
+      total := total + n;
       if n > 0 then
       begin
         writeln(lh, str);
       end;
     until n <= 0;
+
+    if total = 0 then writeln(lh, 'No errors occurred. :-)');
 
     CloseFile(lh);
   end;
