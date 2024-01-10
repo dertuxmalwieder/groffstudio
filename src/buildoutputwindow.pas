@@ -54,6 +54,8 @@ begin
   ret := RunCommand('sh', ['-c', CommandLine], str, [], swoHIDE);
 {$ENDIF}
 
+  if Length(str) = 0 then str := 'No problems have occurred. :-)';
+
   if LogFile <> '' then
   begin
     AssignFile(lh, LogFile);
