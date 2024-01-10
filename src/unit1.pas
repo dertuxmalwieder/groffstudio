@@ -141,9 +141,9 @@ var
 begin
   // What's the current running groff version?
   {$IFDEF WINDOWS}
-  if RunCommand('cmd', ['/c', 'troff --version'], GroffOutputVersion) then
+  if RunCommand('cmd', ['/c', 'troff --version'], GroffOutputVersion, [], swoHIDE) then
   {$ELSE}
-  if RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion) then
+  if RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion, [], swoHIDE) then
   {$ENDIF}
   begin
     edtGroffInstalledVersion.Text := GroffOutputVersion;
@@ -330,7 +330,7 @@ begin
   buildOpts := 'groff';
 
   // - Macro:
-  if cmbMacro.SelText <> '' then buildOpts := buildOpts + ' -' + cmbMacro.SelText;
+  if LeftStr(cmbMacro.Text, 1) = 'm' then buildOpts := buildOpts + ' -' + cmbMacro.Text;
 
   // - Enforce UTF-8:
   buildOpts := buildOpts + ' -Kutf8';

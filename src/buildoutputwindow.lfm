@@ -7,7 +7,7 @@ object BuildStatusWindow: TBuildStatusWindow
   Caption = 'building'
   ClientHeight = 80
   ClientWidth = 168
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object Label1: TLabel
     Left = 32
     Height = 37

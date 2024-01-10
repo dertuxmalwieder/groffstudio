@@ -20,7 +20,7 @@ unit BuildOutputWindow;
 interface
 
 uses
-  Classes, SysUtils, Forms, StdCtrls, Process;
+  Classes, SysUtils, Forms, StdCtrls, Process, Dialogs;
 
 type
 
@@ -51,13 +51,15 @@ var
 begin
   p := TProcess.Create(nil);
   p.Options := p.Options + [poUsePipes, poStderrToOutPut];
+  p.ShowWindow := swoHIDE;
+
+  ShowMessage(CommandLine);
 
 {$IFDEF WINDOWS}
   p.Executable := 'cmd';
   p.Parameters.Add('/c');
-{$ENDIF}
-{$IFDEF UNIX}
-  p.Executable := 'sh';
+{$ELSE}
+  p.Executable := '/bin/sh';
   p.Parameters.Add('-c');
 {$ENDIF}
   p.Parameters.Add(CommandLine);
