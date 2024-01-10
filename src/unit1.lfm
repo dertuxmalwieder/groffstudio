@@ -661,8 +661,8 @@ object MainForm: TMainForm
         MouseActions = <>
         MouseTextActions = <>
         MouseSelActions = <>
-        Options = [eoAutoIndent, eoGroupUndo, eoHideRightMargin, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDragDropEditing, eoDoubleClickSelectsLine]
-        Options2 = [eoEnhanceEndKey, eoFoldedCopyPaste, eoPersistentBlock, eoOverwriteBlock, eoAcceptDragDropEditing]
+        Options = [eoAutoIndent, eoEnhanceHomeKey, eoGroupUndo, eoHideRightMargin, eoKeepCaretX, eoShowSpecialChars, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDragDropEditing, eoDoubleClickSelectsLine]
+        Options2 = [eoEnhanceEndKey, eoPersistentBlock, eoOverwriteBlock, eoAcceptDragDropEditing]
         MouseOptions = [emDragDropEditing, emDoubleClickSelectsLine]
         VisibleSpecialChars = [vscSpace, vscTabAtLast]
         SelectedColor.BackPriority = 50
