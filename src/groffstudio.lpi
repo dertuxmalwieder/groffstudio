@@ -89,8 +89,6 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Conditionals Value="if TargetOS = &apos;darwin&apos; then
-  LinkerOptions += &apos; -ld_classic -macosx_version_min&apos;;"/>
     <CodeGeneration>
       <Optimizations>
         <OptimizationLevel Value="4"/>

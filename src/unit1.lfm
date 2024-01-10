@@ -9,7 +9,7 @@ object MainForm: TMainForm
   DefaultMonitor = dmPrimary
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '3.0.0.3'
+  LCLVersion = '3.1.0.0'
   object MainStatusBar: TStatusBar
     Left = 0
     Height = 18
@@ -227,12 +227,13 @@ object MainForm: TMainForm
         Anchors = [akTop, akLeft, akRight, akBottom]
         Font.CharSet = 4
         Font.Height = -13
+        Font.Name = 'Andale Mono'
         Font.Pitch = fpFixed
         Font.Quality = fqCleartypeNatural
         ParentColor = False
         ParentFont = False
         TabOrder = 3
-        Gutter.Width = 67
+        Gutter.Width = 57
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -690,7 +691,7 @@ object MainForm: TMainForm
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 27
+            Width = 17
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone

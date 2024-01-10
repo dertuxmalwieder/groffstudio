@@ -141,9 +141,9 @@ var
 begin
   // What's the current running groff version?
   {$IFDEF WINDOWS}
-  if RunCommand('cmd', ['/c', 'troff', '--version'], GroffOutputVersion) then
+  if RunCommand('cmd', ['/c', 'troff --version'], GroffOutputVersion) then
   {$ELSE}
-  if RunCommand('/bin/sh', ['-c', 'troff', '--version'], GroffOutputVersion) then
+  if RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion) then
   {$ENDIF}
   begin
     edtGroffInstalledVersion.Text := GroffOutputVersion;
