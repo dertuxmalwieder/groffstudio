@@ -657,6 +657,18 @@ object MainForm: TMainForm
           item
             Command = ecColSelEditorBottom
             ShortCut = 57379
+          end        
+          item
+            Command = ecPaste
+            ShortCut = 4182
+          end        
+          item
+            Command = ecCopy
+            ShortCut = 4163
+          end        
+          item
+            Command = ecCut
+            ShortCut = 4184
           end>
         MouseActions = <>
         MouseTextActions = <>

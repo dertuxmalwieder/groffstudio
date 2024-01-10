@@ -1,4 +1,5 @@
-Version [next]
+Version 0.13.0
+2024-01-10
 
 [Feature] Support for hdtbl.
 [Changed] Build extras and build preprocessors are now listed in a multi-select box.
@@ -6,6 +7,7 @@ Version [next]
 [Improved] The default font looked gross on macOS. This should be better now.
 [Bugfix] Calling troff over the system default shell now, potentially finding more paths.
 [Improved] BuildDocument uses a simpler execution approach now.
+[Feature] macOS Cmd+X/C/V are supported now.
 
 -------------------------------
 
