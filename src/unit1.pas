@@ -140,7 +140,11 @@ var
   {$ENDIF}
 begin
   // What's the current running groff version?
-  if RunCommand('troff', ['--version'], GroffOutputVersion) then
+  {$IFDEF WINDOWS}
+  if RunCommand('cmd', ['/c', 'troff', '--version'], GroffOutputVersion) then
+  {$ELSE}
+  if RunCommand('/bin/sh', ['-c', 'troff', '--version'], GroffOutputVersion) then
+  {$ENDIF}
   begin
     edtGroffInstalledVersion.Text := GroffOutputVersion;
     if pos('GNU', GroffOutputVersion) = 0 then
