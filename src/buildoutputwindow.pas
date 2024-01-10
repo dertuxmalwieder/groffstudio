@@ -44,65 +44,31 @@ implementation
 
 function TBuildStatusWindow.BuildDocument(CommandLine: String; LogFile: String): Boolean;
 var
-  p: TProcess;
-  n, total: LongInt;
   str: String;
   lh: TextFile;
+  ret: Boolean;
 begin
-  p := TProcess.Create(nil);
-  p.Options := p.Options + [poUsePipes, poStderrToOutPut];
-  p.ShowWindow := swoHIDE;
-
-  ShowMessage(CommandLine);
-
 {$IFDEF WINDOWS}
-  p.Executable := 'cmd';
-  p.Parameters.Add('/c');
+  ret := RunCommand('cmd', ['/c', CommandLine], str, [], swoHIDE);
 {$ELSE}
-  p.Executable := '/bin/sh';
-  p.Parameters.Add('-c');
+  ret := RunCommand('sh', ['-c', CommandLine], str, [], swoHIDE);
 {$ENDIF}
-  p.Parameters.Add(CommandLine);
-  p.Execute;
 
   if LogFile <> '' then
   begin
     AssignFile(lh, LogFile);
-    Rewrite(lh);
-
-    total := 0;
-
-    while p.Running do
-    begin
-      n := p.Output.Read(str, 2048);
-      total := total + n;
-      if n > 0 then
-      begin
-        writeln(lh, str);
-      end
-      else Sleep(100);
+    try
+      ReWrite(lh);
+      Write(lh, str);
+    finally
+      CloseFile(lh);
     end;
-
-    { We might have some buffer contents left. }
-    repeat
-      n := p.Output.Read(str, 2048);
-      total := total + n;
-      if n > 0 then
-      begin
-        writeln(lh, str);
-      end;
-    until n <= 0;
-
-    if total = 0 then writeln(lh, 'No errors occurred. :-)');
-
-    CloseFile(lh);
   end;
-
-  result := p.ExitStatus > 0;
-  p.Free;
 
   { Close the status window: }
   Close;
+
+  Result := ret;
 end;
 
 end.

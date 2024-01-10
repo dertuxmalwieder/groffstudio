@@ -5,6 +5,7 @@ Version [next]
 [Improved] If no error has occurred, the log file will contain a success message.
 [Improved] The default font looked gross on macOS. This should be better now.
 [Bugfix] Calling troff over the system default shell now, potentially finding more paths.
+[Improved] BuildDocument uses a simpler execution approach now.
 
 -------------------------------
 
