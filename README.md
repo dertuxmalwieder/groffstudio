@@ -4,7 +4,7 @@ You know what was missing with `groff`? A good alternative to TeXstudio. Here we
 
 ## Screenshot
 
-![Screenshot](https://i.imgur.com/MXLYfwq.png)
+![Screenshot](https://i.imgur.com/GNu2M6n.png)
 
 ## Features
 
