@@ -8,6 +8,7 @@ Version 0.13.0
 [Bugfix] Calling troff over the system default shell now, potentially finding more paths.
 [Improved] BuildDocument uses a simpler execution approach now.
 [Feature] macOS Cmd+X/C/V are supported now.
+[Feature] Added a loading window so you won't think groffstudio would procrastinate.
 
 -------------------------------
 

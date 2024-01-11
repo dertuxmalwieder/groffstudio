@@ -23,7 +23,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="13"/>
-      <BuildNr Value="2"/>
+      <BuildNr Value="4"/>
       <Attributes pvaPreRelease="True"/>
       <StringTable ProductName="groffstudio"/>
     </VersionInfo>
@@ -76,6 +76,14 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="BuildOutputWindow"/>
+      </Unit>
+      <Unit>
+        <Filename Value="splashscreen.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Splashscreen"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Splashscreen"/>
       </Unit>
     </Units>
   </ProjectOptions>
