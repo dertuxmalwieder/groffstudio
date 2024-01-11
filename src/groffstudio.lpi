@@ -80,7 +80,7 @@
       <Unit>
         <Filename Value="splashscreen.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Splashscreen"/>
+        <ComponentName Value="SplashscreenWindow"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Splashscreen"/>
