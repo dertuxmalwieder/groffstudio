@@ -23,7 +23,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="13"/>
-      <BuildNr Value="4"/>
+      <BuildNr Value="16"/>
       <Attributes pvaPreRelease="True"/>
       <StringTable ProductName="groffstudio"/>
     </VersionInfo>
@@ -32,6 +32,8 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(ProjPath)\published\"/>
+      <OpenInFileMan Value="True"/>
       <UseFileFilters Value="True"/>
     </PublishOptions>
     <RunParams>
@@ -99,7 +101,7 @@
     </SearchPaths>
     <CodeGeneration>
       <Optimizations>
-        <OptimizationLevel Value="4"/>
+        <OptimizationLevel Value="3"/>
       </Optimizations>
     </CodeGeneration>
     <Linking>
@@ -108,6 +110,7 @@
         <DebugInfoType Value="dsDwarf3"/>
         <StripSymbols Value="True"/>
       </Debugging>
+      <LinkSmart Value="True"/>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
