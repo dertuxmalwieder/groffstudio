@@ -36,4 +36,5 @@ Thank you.
 
 * IRC: [libera.chat: #groffstudio](irc://irc.libera.chat/groffstudio)
 * Twitter: [@tux0r](https://twitter.com/tux0r)
+* Mastodon: [@tux0r@layer8.space](https://layer8.space/@tux0r)
 * Matrix: @tux0r:matrix.org
