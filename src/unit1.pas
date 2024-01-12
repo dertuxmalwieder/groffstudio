@@ -102,7 +102,6 @@ type
   private
     var currentGroffFilePath: String;
     var currentGroffFileName: String;
-    var hasGroff: Boolean;
     var unsavedChanges: Boolean;
 {$IFDEF WINDOWS}
     var latestGroffWindowsUrl: String;
@@ -113,19 +112,48 @@ type
 
   end;
 
+  TDetectGroffThread = class(TThread)
+    procedure Execute; Override;
+  end;
+
 var
   MainForm: TMainForm;
   BuildWindow: TBuildStatusWindow;
+  hasGroff: Boolean;
 
 implementation
 
 {$R *.lfm}
 
+procedure TDetectGroffThread.Execute;
+var
+  GroffOutputVersion: String;
+begin
+  FreeOnTerminate := True;
+
+  {$IFDEF WINDOWS}
+  if RunCommand('cmd', ['/c', 'troff --version'], GroffOutputVersion, [], swoHIDE) then
+  {$ELSE}
+  if RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion, [], swoHIDE) then
+  {$ENDIF}
+  begin
+    MainForm.edtGroffInstalledVersion.Text := GroffOutputVersion;
+    if pos('GNU', GroffOutputVersion) = 0 then
+       ShowMessage('groffstudio thinks that your installed version of troff is not GNU troff.' + LineEnding +
+       'If this is correct, you are advised to fix this before continuing.' + LineEnding +
+       'If it is an error, please tell me so I can improve this detection.');
+    hasGroff := True;
+  end else begin
+    MainForm.edtGroffInstalledVersion.Text := 'n/a';
+    hasGroff := False;
+    MainForm.lblTroffCommandNotFound.Visible := True;
+  end;
+end;
+
 { TMainForm }
 
 procedure TMainForm.FormCreate(Sender: TObject);
 var
-  GroffOutputVersion: String;
   OnlineVersionsFile: String;
   {$IFDEF WINDOWS}
   reGroffVersion: TRegExpr;
@@ -140,23 +168,7 @@ var
   {$ENDIF}
 begin
   // What's the current running groff version?
-  {$IFDEF WINDOWS}
-  if RunCommand('cmd', ['/c', 'troff --version'], GroffOutputVersion, [], swoHIDE) then
-  {$ELSE}
-  if RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion, [], swoHIDE) then
-  {$ENDIF}
-  begin
-    edtGroffInstalledVersion.Text := GroffOutputVersion;
-    if pos('GNU', GroffOutputVersion) = 0 then
-       ShowMessage('groffstudio thinks that your installed version of troff is not GNU troff.' + LineEnding +
-       'If this is correct, you are advised to fix this before continuing.' + LineEnding +
-       'If it is an error, please tell me so I can improve this detection.');
-    hasGroff := True;
-  end else begin
-    edtGroffInstalledVersion.Text := 'n/a';
-    hasGroff := False;
-    lblTroffCommandNotFound.Visible := True;
-  end;
+  TDetectGroffThread.Create(False);
 
   // Default file name
   currentGroffFileName := '[unsaved file]';

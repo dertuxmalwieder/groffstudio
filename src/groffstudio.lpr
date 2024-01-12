@@ -25,27 +25,17 @@ uses
   athreads,
   {$ENDIF}
   Interfaces,
-  Forms, lazcontrols, Unit1, Helpers, BuildOutputWindow, Splashscreen;
+  Forms, lazcontrols, Unit1, Helpers, BuildOutputWindow;
 
 {$R *.res}
-
-var
-  Splash: TSplashscreenWindow;
 
 begin
   RequireDerivedFormResource:=True;
   Application.Scaled:=True;
   Application.Initialize;
   
-  { Load the loading screen }
-  Splash := TSplashscreenWindow.Create(Application);
-  Splash.Show;
-  Splash.Update;
-  Application.ProcessMessages;
-  
   Application.CreateForm(TMainForm, MainForm);
-  
-  Splash.Close;
+
   Application.Run;
 end.
 

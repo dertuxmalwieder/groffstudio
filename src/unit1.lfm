@@ -8,6 +8,7 @@ object MainForm: TMainForm
   ClientWidth = 847
   DefaultMonitor = dmPrimary
   Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   object MainStatusBar: TStatusBar

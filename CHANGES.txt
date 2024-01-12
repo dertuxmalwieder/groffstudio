@@ -1,4 +1,11 @@
-Version 0.13.0
+Version [next]
+
+[Improved] Finding groff happens in a thread now. No more blocking on startup.
+[Removed] So we got rid of the loading window again.
+
+-------------------------------
+
+Version 0.12.0
 2024-01-11
 
 [Feature] Support for hdtbl.
