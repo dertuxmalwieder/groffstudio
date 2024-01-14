@@ -9,7 +9,8 @@ You know what was missing with `groff`? A good alternative to TeXstudio. Here we
 ## Features
 
 * Written in Lazarus (Free Pascal).
-  * Should be cross-platform (but Windows support is mediocre yet).
+  * Should be cross-platform.
+  * Successfully tested on Windows 10, macOS and Linux.
 * Can produce PS and PDF files.
 * Can handle some macros.
 
