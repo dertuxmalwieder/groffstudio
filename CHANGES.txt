@@ -1,4 +1,5 @@
-Version [next]
+Version 0.13.1
+2024-01-29
 
 [Improved] Finding groff happens in a thread now. No more blocking on startup.
 [Removed] So we got rid of the loading window again.
