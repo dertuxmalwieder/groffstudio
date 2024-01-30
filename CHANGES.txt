@@ -1,3 +1,9 @@
+Version [next]
+
+[Improved] Multi-threading is more standards-compliant now (thanks @Th69).
+
+-------------------------------
+
 Version 0.13.1
 2024-01-29
 

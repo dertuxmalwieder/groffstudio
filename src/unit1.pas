@@ -96,57 +96,71 @@ type
     procedure lblGithubRepoClick(Sender: TObject);
     procedure lblWebsiteClick(Sender: TObject);
     procedure SynEdit1Change(Sender: TObject);
-{$IFDEF DARWIN}
+    {$IFDEF DARWIN}
     procedure GetSocketHandler(Sender: TObject; const UseSSL: Boolean; out AHandler: TSocketHandler);
-{$ENDIF}
+    {$ENDIF}
   private
-    var currentGroffFilePath: String;
-    var currentGroffFileName: String;
-    var unsavedChanges: Boolean;
-{$IFDEF WINDOWS}
-    var latestGroffWindowsUrl: String;
-{$ENDIF}
-    var storeBuildSettings: Boolean;
-    var updateCheck: Boolean;
+  var
+    currentGroffFilePath: string;
+    currentGroffFileName: string;
+    unsavedChanges: boolean;
+    {$IFDEF WINDOWS}
+    atestGroffWindowsUrl: String;
+    {$ENDIF}
+    storeBuildSettings: boolean;
+    updateCheck: boolean;
   public
 
   end;
 
   TDetectGroffThread = class(TThread)
-    procedure Execute; Override;
+  private
+    procedure UpdateUI;
+  protected
+    procedure Execute; override;
   end;
 
 var
   MainForm: TMainForm;
   BuildWindow: TBuildStatusWindow;
-  hasGroff: Boolean;
+  hasGroff: boolean;
+  GroffOutputVersion: string;
 
 implementation
 
 {$R *.lfm}
 
+procedure TDetectGroffThread.UpdateUI;
+begin
+  MainForm.edtGroffInstalledVersion.Text := GroffOutputVersion;
+  if pos('GNU', GroffOutputVersion) = 0 then
+  begin
+    ShowMessage('groffstudio thinks that your installed version of troff is not GNU troff.'
+      + LineEnding + 'If this is correct, you are advised to fix this before continuing.'
+      + LineEnding +
+      'If it is an error, please tell me so I can improve this detection.');
+    hasGroff := True;
+  end
+  else
+  begin
+    MainForm.edtGroffInstalledVersion.Text := 'n/a';
+    hasGroff := False;
+    MainForm.lblTroffCommandNotFound.Visible := True;
+  end;
+end;
+
 procedure TDetectGroffThread.Execute;
-var
-  GroffOutputVersion: String;
 begin
   FreeOnTerminate := True;
 
   {$IFDEF WINDOWS}
   if RunCommand('cmd', ['/c', 'troff --version'], GroffOutputVersion, [], swoHIDE) then
   {$ELSE}
-  if RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion, [], swoHIDE) then
+  if RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion,
+    [], swoHIDE) then
   {$ENDIF}
   begin
-    MainForm.edtGroffInstalledVersion.Text := GroffOutputVersion;
-    if pos('GNU', GroffOutputVersion) = 0 then
-       ShowMessage('groffstudio thinks that your installed version of troff is not GNU troff.' + LineEnding +
-       'If this is correct, you are advised to fix this before continuing.' + LineEnding +
-       'If it is an error, please tell me so I can improve this detection.');
-    hasGroff := True;
-  end else begin
-    MainForm.edtGroffInstalledVersion.Text := 'n/a';
-    hasGroff := False;
-    MainForm.lblTroffCommandNotFound.Visible := True;
+    Synchronize(@UpdateUI);
   end;
 end;
 
@@ -154,13 +168,13 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 var
-  OnlineVersionsFile: String;
+  OnlineVersionsFile: string;
   {$IFDEF WINDOWS}
   reGroffVersion: TRegExpr;
   {$ENDIF}
   reGroffStudioVersion: TRegExpr;
   FileVerInfo: TFileVersionInfo;
-  HasVersionUpdate: Integer;
+  HasVersionUpdate: integer;
   GroffHelpers: TGroffHelpers;
   ResStream: TResourceStream;
   {$IFDEF DARWIN}
@@ -174,7 +188,7 @@ begin
   currentGroffFileName := '[unsaved file]';
 
   // Embed the license
-  ResStream:= TResourceStream.Create(HInstance, 'LICENSE', RT_RCDATA);
+  ResStream := TResourceStream.Create(HInstance, 'LICENSE', RT_RCDATA);
   try
     mLicense.Lines.LoadFromStream(ResStream);
   finally
@@ -186,29 +200,29 @@ begin
   storeBuildSettings := iniStorage.ReadBoolean('AutoSaveBuildSettings', False);
   chkAutoSaveBuildSettings.Checked := storeBuildSettings;
 
-{$IF DEFINED(LINUX) OR DEFINED(BSD)}
+  {$IF DEFINED(LINUX) OR DEFINED(BSD)}
   // On platforms which probably use a package manager (currently, Linux and
   // BSDs), the "update check" checkbox is disabled.
   chkUpdateCheckOnStart.Enabled := False;
-{$ELSE}
+  {$ELSE}
   updateCheck := iniStorage.ReadBoolean('UpdateCheckOnStart', False);
   chkUpdateCheckOnStart.Checked := updateCheck;
-{$ENDIF}
+  {$ENDIF}
 
   if storeBuildSettings then
   begin
-       chkLogFile.Checked := iniStorage.ReadBoolean('BuildLogFile', False);
-       cmbMacro.Text := iniStorage.ReadString('BuildChosenMacro', '[ select ]');
-       chkBoxPreprocessors.Checked[0] := iniStorage.ReadBoolean('BuildUseChem', False);
-       chkBoxPreprocessors.Checked[1] := iniStorage.ReadBoolean('BuildUseEqn', False);
-       chkBoxPreprocessors.Checked[2] := iniStorage.ReadBoolean('BuildUseGrn', False);
-       chkBoxPreprocessors.Checked[3] := iniStorage.ReadBoolean('BuildUsePic', False);
-       chkBoxPreprocessors.Checked[4] := iniStorage.ReadBoolean('BuildUseRefer', False);
-       chkBoxPreprocessors.Checked[5] := iniStorage.ReadBoolean('BuildUseTbl', False);
-       chkBoxExtras.Checked[0] := iniStorage.ReadBoolean('BuildUseHdtbl', False);
-       chkBoxExtras.Checked[1] := iniStorage.ReadBoolean('BuildUsePdfMark', False);
-       rdPs.Checked := iniStorage.ReadBoolean('BuildToPostscript', False);
-       rdPdf.Checked := iniStorage.ReadBoolean('BuildToPDF', False);
+    chkLogFile.Checked := iniStorage.ReadBoolean('BuildLogFile', False);
+    cmbMacro.Text := iniStorage.ReadString('BuildChosenMacro', '[ select ]');
+    chkBoxPreprocessors.Checked[0] := iniStorage.ReadBoolean('BuildUseChem', False);
+    chkBoxPreprocessors.Checked[1] := iniStorage.ReadBoolean('BuildUseEqn', False);
+    chkBoxPreprocessors.Checked[2] := iniStorage.ReadBoolean('BuildUseGrn', False);
+    chkBoxPreprocessors.Checked[3] := iniStorage.ReadBoolean('BuildUsePic', False);
+    chkBoxPreprocessors.Checked[4] := iniStorage.ReadBoolean('BuildUseRefer', False);
+    chkBoxPreprocessors.Checked[5] := iniStorage.ReadBoolean('BuildUseTbl', False);
+    chkBoxExtras.Checked[0] := iniStorage.ReadBoolean('BuildUseHdtbl', False);
+    chkBoxExtras.Checked[1] := iniStorage.ReadBoolean('BuildUsePdfMark', False);
+    rdPs.Checked := iniStorage.ReadBoolean('BuildToPostscript', False);
+    rdPdf.Checked := iniStorage.ReadBoolean('BuildToPDF', False);
   end;
 
   // What's the latest available version?
@@ -216,8 +230,11 @@ begin
 
   try
     FileVerInfo.ReadFileInfo;
-    edtGroffStudioInstalledVersion.Text := FileVerInfo.VersionStrings.Values['FileVersion'];
-    lblAboutProductName.Caption := FileVerInfo.VersionStrings.Values['ProductName'] + ' ' + FileVerInfo.VersionStrings.Values['FileVersion'];
+    edtGroffStudioInstalledVersion.Text :=
+      FileVerInfo.VersionStrings.Values['FileVersion'];
+    lblAboutProductName.Caption :=
+      FileVerInfo.VersionStrings.Values['ProductName'] + ' ' +
+      FileVerInfo.VersionStrings.Values['FileVersion'];
     MainStatusBar.Panels[2].Text := '';
 
     {$IFDEF WINDOWS}
@@ -283,7 +300,7 @@ begin
     {$ENDIF}
     edtOnlineGroffVersionWindows.Text := 'n/a';
     btnDownloadGroffWindows.Enabled := False;
-  {$ENDIF}
+    {$ENDIF}
   finally
     FileVerInfo.Free;
   end;
@@ -319,18 +336,18 @@ end;
 
 procedure TMainForm.btnDownloadGroffWindowsClick(Sender: TObject);
 begin
-   {$IFDEF WINDOWS}
+  {$IFDEF WINDOWS}
    // On other systems, the button is disabled anyway.
    OpenURL(latestGroffWindowsUrl);
-   {$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TMainForm.btnBuildClick(Sender: TObject);
 var
-  buildSuccess: Boolean;
-  buildOpts: String;
-  logFileName: String = '';
-  outputFileName: String;
+  buildSuccess: boolean;
+  buildOpts: string;
+  logFileName: string = '';
+  outputFileName: string;
 begin
   // Reset status display:
   MainStatusBar.Panels[1].Text := '';
@@ -348,22 +365,24 @@ begin
   buildOpts := buildOpts + ' -Kutf8';
 
   // - Preprocessors:
-  if chkBoxPreprocessors.Checked[0] then   buildOpts := buildOpts + ' -chem';
-  if chkBoxPreprocessors.Checked[1] then   buildOpts := buildOpts + ' -eqn';
-  if chkBoxPreprocessors.Checked[2] then   buildOpts := buildOpts + ' -grn';
-  if chkBoxPreprocessors.Checked[3] then   buildOpts := buildOpts + ' -pic';
-  if chkBoxPreprocessors.Checked[4] then   buildOpts := buildOpts + ' -refer';
-  if chkBoxPreprocessors.Checked[5] then   buildOpts := buildOpts + ' -tbl';
+  if chkBoxPreprocessors.Checked[0] then  buildOpts := buildOpts + ' -chem';
+  if chkBoxPreprocessors.Checked[1] then  buildOpts := buildOpts + ' -eqn';
+  if chkBoxPreprocessors.Checked[2] then  buildOpts := buildOpts + ' -grn';
+  if chkBoxPreprocessors.Checked[3] then  buildOpts := buildOpts + ' -pic';
+  if chkBoxPreprocessors.Checked[4] then  buildOpts := buildOpts + ' -refer';
+  if chkBoxPreprocessors.Checked[5] then  buildOpts := buildOpts + ' -tbl';
 
   if chkBoxExtras.Checked[0] then  buildOpts := buildOpts + ' -mhdtbl';
 
   // - PDF-specifics:
-  if rdPdf.Checked then begin
+  if rdPdf.Checked then
+  begin
     buildOpts := buildOpts + ' -Tpdf';
     if chkBoxExtras.Checked[1] then buildOpts := buildOpts + ' -mpdfmark';
     outputFileName := currentGroffFilePath + '.pdf';
   end
-  else outputFileName := currentGroffFilePath + '.ps';
+  else
+    outputFileName := currentGroffFilePath + '.ps';
 
   // - Input file:
   buildOpts := buildOpts + ' ' + currentGroffFilePath;
@@ -384,15 +403,17 @@ end;
 
 procedure TMainForm.btnLoadGroffClick(Sender: TObject);
 var
-  Reply, BoxStyle: Integer;
+  Reply, BoxStyle: integer;
 begin
   // If the current file has unsaved changes, ask first.
-  if unsavedChanges then with Application do begin
-    BoxStyle := MB_ICONQUESTION + MB_YESNO;
-    Reply := MessageBox('Do you want to save the document first?', 'UnsavedChanges', BoxStyle);
-    if Reply = IDYES then SynEdit1.Lines.SaveToFile(currentGroffFilePath);
-    unsavedChanges := False;
-  end;
+  if unsavedChanges then with Application do
+    begin
+      BoxStyle := MB_ICONQUESTION + MB_YESNO;
+      Reply := MessageBox('Do you want to save the document first?',
+        'UnsavedChanges', BoxStyle);
+      if Reply = idYes then SynEdit1.Lines.SaveToFile(currentGroffFilePath);
+      unsavedChanges := False;
+    end;
 
   if odOpenGroffFile.Execute then
   begin
@@ -425,7 +446,8 @@ begin
     currentGroffFileName := ExtractFileName(currentGroffFilePath);
     SynEdit1.Lines.SaveToFile(sdSaveGroffFile.FileName);
 
-    if hasGroff then begin
+    if hasGroff then
+    begin
       btnBuild.Enabled := True;
       chkLogFile.Enabled := True;
     end;
@@ -461,15 +483,17 @@ end;
 
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 var
-  Reply, BoxStyle: Integer;
+  Reply, BoxStyle: integer;
 begin
   // If the current file has unsaved changes, ask first.
   if unsavedChanges then
-  with Application do begin
-    BoxStyle := MB_ICONQUESTION + MB_YESNO;
-    Reply := MessageBox('Do you want to save the document first?', 'UnsavedChanges', BoxStyle);
-    if Reply = IDYES then btnSaveGroffClick(Sender);
-  end;
+    with Application do
+    begin
+      BoxStyle := MB_ICONQUESTION + MB_YESNO;
+      Reply := MessageBox('Do you want to save the document first?',
+        'UnsavedChanges', BoxStyle);
+      if Reply = idYes then btnSaveGroffClick(Sender);
+    end;
 end;
 
 {$IFDEF DARWIN}
@@ -484,4 +508,3 @@ end;
 {$ENDIF}
 
 end.
-

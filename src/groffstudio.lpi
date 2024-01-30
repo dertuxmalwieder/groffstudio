@@ -23,8 +23,8 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="13"/>
-      <RevisionNr Value="1"/>
-      <BuildNr Value="17"/>
+      <RevisionNr Value="2"/>
+      <BuildNr Value="1"/>
       <StringTable ProductName="groffstudio"/>
     </VersionInfo>
     <BuildModes>
