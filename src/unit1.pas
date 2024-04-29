@@ -105,7 +105,7 @@ type
     currentGroffFileName: string;
     unsavedChanges: boolean;
     {$IFDEF WINDOWS}
-    atestGroffWindowsUrl: String;
+    latestGroffWindowsUrl: String;
     {$ENDIF}
     storeBuildSettings: boolean;
     updateCheck: boolean;
