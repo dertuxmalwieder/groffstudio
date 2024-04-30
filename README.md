@@ -12,7 +12,7 @@ You know what was missing with `groff`? A good alternative to TeXstudio. Here we
   * Should be cross-platform.
   * Successfully tested on Windows 10, macOS and Linux.
 * Can produce PS and PDF files.
-  * On Windows, creating PDF files requires [Ghostscript](https://www.ghostscript.com/) for the time being. On other systems, [i]groff[/i] should be able to just do it.
+  * On Windows, creating PDF files requires [Ghostscript](https://www.ghostscript.com/) for the time being. On other systems, `groff` should be able to just do it.
 * Can handle some macros.
 
 ## License
