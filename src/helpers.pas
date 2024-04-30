@@ -25,39 +25,39 @@ uses
 type
   TGroffHelpers = class
   public
-    procedure VerStrCompare(newVersion, oldVersion: String; out comp: Integer);
-end;
+    procedure VerStrCompare(newVersion, oldVersion: string; out comp: integer);
+  end;
 
 implementation
 
-procedure TGroffHelpers.VerStrCompare(newVersion, oldVersion: String; out comp: Integer);
+procedure TGroffHelpers.VerStrCompare(newVersion, oldVersion: string; out comp: integer);
 var
-  nE1, nE2, nV1, nV2: Integer;
-
+  nE1, nE2, nV1, nV2: integer;
 begin
- if (Length(newVersion) > 0) or (Length(oldVersion) > 0) then begin
-  nE1 := Pos('.', newVersion + '.');
-  nE2 := Pos('.', oldVersion + '.');
-  if nE1 > 1 then
-    nV1 := StrToInt(Copy(newVersion,1,(nE1-1)))
-  else
-    nV1 := 0;
+  if (Length(newVersion) > 0) or (Length(oldVersion) > 0) then
+  begin
+    nE1 := Pos('.', newVersion + '.');
+    nE2 := Pos('.', oldVersion + '.');
+    if nE1 > 1 then
+      nV1 := StrToInt(Copy(newVersion, 1, (nE1 - 1)))
+    else
+      nV1 := 0;
 
-  if nE2 > 1 then
-    nV2 := StrToInt(Copy(oldVersion,1,(nE2-1)))
-  else
-    nV2 := 0;
+    if nE2 > 1 then
+      nV2 := StrToInt(Copy(oldVersion, 1, (nE2 - 1)))
+    else
+      nV2 := 0;
 
-  if nV1 = nV2 then
-    VerStrCompare(Copy(newVersion, nE1 + 1, Length(newVersion)), Copy(oldVersion, nE2 + 1, Length(oldVersion)), comp)
-  else if nV1 > nV2 then
-    comp := 1
-  else if nV1 < nV2 then
-    comp := -1;
- end
- else
-   comp := 0;
+    if nV1 = nV2 then
+      VerStrCompare(Copy(newVersion, nE1 + 1, Length(newVersion)),
+        Copy(oldVersion, nE2 + 1, Length(oldVersion)), comp)
+    else if nV1 > nV2 then
+      comp := 1
+    else if nV1 < nV2 then
+      comp := -1;
+  end
+  else
+    comp := 0;
 end;
 
 end.
-

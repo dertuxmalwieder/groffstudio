@@ -8,7 +8,6 @@ object MainForm: TMainForm
   ClientWidth = 847
   DefaultMonitor = dmPrimary
   Position = poScreenCenter
-  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   object MainStatusBar: TStatusBar
@@ -36,10 +35,10 @@ object MainForm: TMainForm
     Height = 662
     Top = 8
     Width = 827
-    ActivePage = tsSettings
+    ActivePage = tsEdit
     Anchors = [akTop, akLeft, akRight, akBottom]
     Style = tsFlatButtons
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     object tsEdit: TTabSheet
       Caption = 'edit a groff document'
@@ -881,7 +880,7 @@ object MainForm: TMainForm
       object lblTroffCommandNotFound: TLabel
         Left = 8
         Height = 45
-        Top = 112
+        Top = 130
         Width = 806
         Anchors = [akTop, akLeft, akRight]
         Caption = 'groff was not found. in order to use groffstudio, you absolutely need groff in your PATH variable. on unix and unix-like systems, you''ll need to edit the $PATH variable. on windows, i warmly recommend the Rapid Environment Editor for that.'#13#10'please exit groffstudio at your nearest convenience and adjust your PATH variables. then try again.'
@@ -908,6 +907,23 @@ object MainForm: TMainForm
         Width = 103
         Caption = 'groffstudio version:'
         ParentColor = False
+      end
+      object Label15: TLabel
+        Left = 8
+        Height = 15
+        Top = 98
+        Width = 103
+        Caption = 'ghostscript version:'
+      end
+      object edtGhostscriptInstalledVersion: TEdit
+        Left = 144
+        Height = 15
+        Top = 98
+        Width = 671
+        Anchors = [akTop, akLeft, akRight]
+        BorderStyle = bsNone
+        Enabled = False
+        TabOrder = 3
       end
     end
     object tsAbout: TTabSheet

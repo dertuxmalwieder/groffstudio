@@ -23,13 +23,13 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
   ExtCtrls, Buttons, ExtendedNotebook, SynEdit, fphttpclient, RegExpr, LCLIntf,
   LCLType, IniPropStorage, ComboEx, Process, Helpers, fileinfo,
-  {$IF DEFINED(WINDOWS)}
+{$IF DEFINED(WINDOWS)}
   winpeimagereader, opensslsockets,
-  {$ELSEIF DEFINED(DARWIN)}
+{$ELSEIF DEFINED(DARWIN)}
   machoreader, ssockets, sslsockets, sslbase, opensslsockets,
-  {$ELSEIF DEFINED(LINUX)}
+{$ELSEIF DEFINED(LINUX)}
   elfreader,
-  {$ENDIF}
+{$ENDIF}
   BuildOutputWindow;
 
 type
@@ -52,6 +52,7 @@ type
     cmbMacro: TComboBox;
     edtGroffInstalledVersion: TEdit;
     edtGroffstudioInstalledVersion: TEdit;
+    edtGhostscriptInstalledVersion: TEdit;
     edtOnlineGroffVersionWindows: TEdit;
     ExtendedNotebook1: TExtendedNotebook;
     GroupBox1: TGroupBox;
@@ -64,6 +65,7 @@ type
     Label12: TLabel;
     Label13: TLabel;
     Label14: TLabel;
+    Label15: TLabel;
     lblGithubRepo: TLabel;
     lblFossilRepo: TLabel;
     lblWebsite: TLabel;
@@ -100,17 +102,17 @@ type
     procedure lblGithubRepoClick(Sender: TObject);
     procedure lblWebsiteClick(Sender: TObject);
     procedure SynEdit1Change(Sender: TObject);
-    {$IFDEF DARWIN}
+{$IFDEF DARWIN}
     procedure GetSocketHandler(Sender: TObject; const UseSSL: Boolean; out AHandler: TSocketHandler);
-    {$ENDIF}
+{$ENDIF}
   private
   var
     currentGroffFilePath: string;
     currentGroffFileName: string;
     unsavedChanges: boolean;
-    {$IFDEF WINDOWS}
+{$IFDEF WINDOWS}
     latestGroffWindowsUrl: String;
-    {$ENDIF}
+{$ENDIF}
     // Settings:
     storeBuildSettings: boolean;
     updateCheck: boolean;
@@ -132,6 +134,7 @@ var
   hasGhostscript: boolean;
   GroffOutputVersion: string;
   ps2pdfOutput: string;
+  GhostscriptOutputVersion: string;
 
 implementation
 
@@ -159,39 +162,50 @@ begin
   // Try to find ps2pdf:
   if pos('ps2pdf', ps2pdfOutput) = 0 then
   begin
-    {$IFDEF WINDOWS}
+{$IFDEF WINDOWS}
     // ps2pdf is mandatory on Windows.
     ShowMessage('On Windows, for creating PDF files, you need Ghostscript installed.'
     + LineEnding + 'Sadly, groffstudio could not find ps2pdf.bat in your %PATH%, so '
     + 'writing PDF files will not be supported. Please install Ghostscript and make sure '
     + 'that the folder that contains ps2pdf.bat is in your %PATH%.');
     MainForm.rdPdf.Enabled := False;
-    {$ENDIF}
+{$ENDIF}
     hasGhostscript := False;
     MainForm.chkUseGhostscript.Checked := False;
     MainForm.chkUseGhostscript.Enabled := False;
-  end else begin
+  end
+  else
+  begin
     hasGhostscript := True;
-    {$IFDEF WINDOWS}
+{$IFDEF WINDOWS}
     MainForm.rdPdf.Enabled := True;
     MainForm.chkUseGhostscript.Checked := True;
-    {$ENDIF}
+{$ENDIF}
     MainForm.chkUseGhostscript.Enabled := True;
   end;
+
+  // Try to find Ghostscript, just for displaying the version:
+  if hasGhostscript then
+    MainForm.edtGhostscriptInstalledVersion.Text := GhostscriptOutputVersion
+  else
+    MainForm.edtGhostscriptInstalledVersion.Text := 'n/a';
 end;
 
 procedure TDetectGroffThread.Execute;
 begin
   FreeOnTerminate := True;
 
-  {$IFDEF WINDOWS}
+{$IFDEF WINDOWS}
   RunCommand('cmd', ['/c', 'troff --version'], GroffOutputVersion, [], swoHIDE);
+  RunCommand('cmd', ['/c', 'gs --version'], GhostscriptOutputVersion, [], swoHIDE);
   RunCommand('cmd', ['/c', 'ps2pdf'], ps2pdfOutput, [], swoHIDE);
-  {$ELSE}
+{$ELSE}
   RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion,
     [], swoHIDE);
+  RunCommand('/bin/sh', ['-c', 'gs --version'], GhostscriptOutputVersion,
+    [], swoHIDE);
   RunCommand('/bin/sh', ['-c', 'ps2pdf'], ps2pdfOutput, [], swoHIDE);
-  {$ENDIF}
+{$ENDIF}
   Synchronize(@UpdateUI);
 end;
 
@@ -200,17 +214,17 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 var
   OnlineVersionsFile: string;
-  {$IFDEF WINDOWS}
+{$IFDEF WINDOWS}
   reGroffVersion: TRegExpr;
-  {$ENDIF}
+{$ENDIF}
   reGroffStudioVersion: TRegExpr;
   FileVerInfo: TFileVersionInfo;
   HasVersionUpdate: integer;
   GroffHelpers: TGroffHelpers;
   ResStream: TResourceStream;
-  {$IFDEF DARWIN}
+{$IFDEF DARWIN}
   HTTPClient: TFPHttpClient;
-  {$ENDIF}
+{$ENDIF}
 begin
   // What's the current running groff version?
   TDetectGroffThread.Create(False);
@@ -226,25 +240,25 @@ begin
     ResStream.Free;
   end;
 
-  {$IFNDEF WINDOWS}
+{$IFNDEF WINDOWS}
   // Ghostscript is not optional on Windows.
   // On other platforms, let's use the stored setting.
   chkUseGhostscript.Checked := iniStorage.ReadBoolean('UseGhostscript', False);
-  {$ENDIF}
+{$ENDIF}
 
   // Restore the settings
   iniStorage.Restore;
   storeBuildSettings := iniStorage.ReadBoolean('AutoSaveBuildSettings', False);
   chkAutoSaveBuildSettings.Checked := storeBuildSettings;
 
-  {$IF DEFINED(LINUX) OR DEFINED(BSD)}
+{$IF DEFINED(LINUX) OR DEFINED(BSD)}
   // On platforms which probably use a package manager (currently, Linux and
   // BSDs), the "update check" checkbox is disabled.
   chkUpdateCheckOnStart.Enabled := False;
-  {$ELSE}
+{$ELSE}
   updateCheck := iniStorage.ReadBoolean('UpdateCheckOnStart', False);
   chkUpdateCheckOnStart.Checked := updateCheck;
-  {$ENDIF}
+{$ENDIF}
 
   if storeBuildSettings then
   begin
@@ -274,7 +288,7 @@ begin
       FileVerInfo.VersionStrings.Values['FileVersion'];
     MainStatusBar.Panels[2].Text := '';
 
-    {$IFDEF WINDOWS}
+{$IFDEF WINDOWS}
     if updateCheck then
     begin
       OnlineVersionsFile := TFPCustomHTTPClient.SimpleGet('https://groff.tuxproject.de/updates/versions.txt');
@@ -305,7 +319,7 @@ begin
         edtOnlineGroffVersionWindows.Text := 'n/a';
         btnDownloadGroffWindows.Enabled := False;
     end;
-    {$ELSE}
+{$ELSE}
     // Non-Windows platforms won't need some of that.
     {$IFDEF DARWIN}
     // What's the latest available version?
@@ -337,7 +351,7 @@ begin
     {$ENDIF}
     edtOnlineGroffVersionWindows.Text := 'n/a';
     btnDownloadGroffWindows.Enabled := False;
-    {$ENDIF}
+{$ENDIF}
   finally
     FileVerInfo.Free;
   end;
@@ -373,10 +387,10 @@ end;
 
 procedure TMainForm.btnDownloadGroffWindowsClick(Sender: TObject);
 begin
-  {$IFDEF WINDOWS}
+{$IFDEF WINDOWS}
    // On other systems, the button is disabled anyway.
    OpenURL(latestGroffWindowsUrl);
-  {$ENDIF}
+{$ENDIF}
 end;
 
 procedure TMainForm.btnBuildClick(Sender: TObject);
@@ -412,7 +426,7 @@ begin
   if chkBoxExtras.Checked[0] then  buildOpts := buildOpts + ' -mhdtbl';
 
   // - PDF-specifics:
-  {$IFNDEF WINDOWS}
+{$IFNDEF WINDOWS}
   // On Windows, we use a two-step program:
   // 1) Output to PostScript,
   // 2) ps2pdf to PDF.
@@ -424,7 +438,7 @@ begin
     outputFileName := currentGroffFilePath + '.pdf';
   end
   else
-  {$ENDIF}
+{$ENDIF}
     outputFileName := currentGroffFilePath + '.ps';
 
   // - Input file:
@@ -437,12 +451,12 @@ begin
   // Build:
   buildSuccess := BuildWindow.BuildDocument(buildOpts, logFileName);
 
-  {$IFDEF WINDOWS}
+{$IFDEF WINDOWS}
   if buildSuccess and hasGhostscript and rdPdf.Checked then
-  {$ELSE}
+{$ELSE}
   // On non-Windows systems, Ghostscript is entirely optional.
   if buildSuccess and hasGhostscript and chkUseGhostscript.Checked and rdPdf.Checked then
-  {$ENDIF}
+{$ENDIF}
   begin
     // Invoke ps2pdf:
     buildOpts := 'ps2pdf';
@@ -450,8 +464,8 @@ begin
     buildOpts := buildOpts + ' ' + outputFileName;
     buildSuccess := BuildWindow.BuildDocument(buildOpts, logFileName);
 
-    if buildSuccess and not chkKeepPostscriptFile.Checked then;
-       DeleteFile(outputFileName); // get rid of the .ps fil
+    if buildSuccess and not chkKeepPostscriptFile.Checked then
+       DeleteFile(outputFileName); // get rid of the .ps file
   end;
 
   if buildSuccess then

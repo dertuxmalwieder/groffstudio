@@ -20,22 +20,25 @@ program groffstudio;
 uses
   {$IFDEF UNIX}
   cthreads,
-  {$ENDIF}
+{$ENDIF}
   {$IFDEF HASAMIGA}
   athreads,
-  {$ENDIF}
+{$ENDIF}
   Interfaces,
-  Forms, lazcontrols, Unit1, Helpers, BuildOutputWindow;
+  Forms,
+  lazcontrols,
+  Unit1,
+  Helpers,
+  BuildOutputWindow;
 
-{$R *.res}
+  {$R *.res}
 
 begin
-  RequireDerivedFormResource:=True;
-  Application.Scaled:=True;
+  RequireDerivedFormResource := True;
+  Application.Scaled := True;
   Application.Initialize;
-  
+
   Application.CreateForm(TMainForm, MainForm);
 
   Application.Run;
 end.
-

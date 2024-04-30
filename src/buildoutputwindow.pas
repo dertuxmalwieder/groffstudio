@@ -31,28 +31,28 @@ type
   private
 
   public
-    function BuildDocument(CommandLine: String; LogFile: String): Boolean;
+    function BuildDocument(CommandLine: string; LogFile: string): boolean;
 
   end;
 
 var
-  OutputText: String;
+  OutputText: string;
 
 implementation
 
 {$R *.lfm}
 
-function TBuildStatusWindow.BuildDocument(CommandLine: String; LogFile: String): Boolean;
+function TBuildStatusWindow.BuildDocument(CommandLine: string; LogFile: string): boolean;
 var
-  str: String;
+  str: string;
   lh: TextFile;
-  ret: Boolean;
+  ret: boolean;
 begin
-{$IFDEF WINDOWS}
+  {$IFDEF WINDOWS}
   ret := RunCommand('cmd', ['/c', CommandLine], str, [], swoHIDE);
 {$ELSE}
   ret := RunCommand('sh', ['-c', CommandLine], str, [], swoHIDE);
-{$ENDIF}
+  {$ENDIF}
 
   if Length(str) = 0 then str := 'No problems have occurred. :-)';
 
@@ -74,4 +74,3 @@ begin
 end;
 
 end.
-
