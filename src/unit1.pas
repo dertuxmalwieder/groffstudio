@@ -42,6 +42,8 @@ type
     btnBuild: TButton;
     btnDownloadGroffWindows: TButton;
     btnSaveSettings: TButton;
+    chkKeepPostscriptFile: TCheckBox;
+    chkUseGhostscript: TCheckBox;
     chkBoxExtras: TCheckComboBox;
     chkBoxPreprocessors: TCheckComboBox;
     chkUpdateCheckOnStart: TCheckBox;
@@ -54,6 +56,7 @@ type
     ExtendedNotebook1: TExtendedNotebook;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
+    GroupBox3: TGroupBox;
     iniStorage: TIniPropStorage;
     Label1: TLabel;
     Label10: TLabel;
@@ -90,6 +93,7 @@ type
     procedure btnLoadGroffClick(Sender: TObject);
     procedure btnSaveGroffClick(Sender: TObject);
     procedure btnSaveSettingsClick(Sender: TObject);
+    procedure chkUseGhostscriptChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure lblFossilRepoClick(Sender: TObject);
@@ -107,6 +111,7 @@ type
     {$IFDEF WINDOWS}
     latestGroffWindowsUrl: String;
     {$ENDIF}
+    // Settings:
     storeBuildSettings: boolean;
     updateCheck: boolean;
   public
@@ -124,11 +129,9 @@ var
   MainForm: TMainForm;
   BuildWindow: TBuildStatusWindow;
   hasGroff: boolean;
-  GroffOutputVersion: string;
-  {$IFDEF WINDOWS}
   hasGhostscript: boolean;
+  GroffOutputVersion: string;
   ps2pdfOutput: string;
-  {$ENDIF}
 
 implementation
 
@@ -153,20 +156,28 @@ begin
     MainForm.edtGroffInstalledVersion.Text := GroffOutputVersion;
   end;
 
-  {$IFDEF WINDOWS}
-  // Try to find ps2pdf (Windows-only):
+  // Try to find ps2pdf:
   if pos('ps2pdf', ps2pdfOutput) = 0 then
   begin
+    {$IFDEF WINDOWS}
+    // ps2pdf is mandatory on Windows.
     ShowMessage('On Windows, for creating PDF files, you need Ghostscript installed.'
-    + LineEnding + 'Sadly, groffstudio could not find ps2pdf.exe in your %PATH%, so '
-    + 'writing PDF files will not be supported.');
-    hasGhostscript := False;
+    + LineEnding + 'Sadly, groffstudio could not find ps2pdf.bat in your %PATH%, so '
+    + 'writing PDF files will not be supported. Please install Ghostscript and make sure '
+    + 'that the folder that contains ps2pdf.bat is in your %PATH%.');
     MainForm.rdPdf.Enabled := False;
+    {$ENDIF}
+    hasGhostscript := False;
+    MainForm.chkUseGhostscript.Checked := False;
+    MainForm.chkUseGhostscript.Enabled := False;
   end else begin
     hasGhostscript := True;
+    {$IFDEF WINDOWS}
     MainForm.rdPdf.Enabled := True;
+    MainForm.chkUseGhostscript.Checked := True;
+    {$ENDIF}
+    MainForm.chkUseGhostscript.Enabled := True;
   end;
-  {$ENDIF}
 end;
 
 procedure TDetectGroffThread.Execute;
@@ -179,6 +190,7 @@ begin
   {$ELSE}
   RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion,
     [], swoHIDE);
+  RunCommand('/bin/sh', ['-c', 'ps2pdf'], ps2pdfOutput, [], swoHIDE);
   {$ENDIF}
   Synchronize(@UpdateUI);
 end;
@@ -213,6 +225,12 @@ begin
   finally
     ResStream.Free;
   end;
+
+  {$IFNDEF WINDOWS}
+  // Ghostscript is not optional on Windows.
+  // On other platforms, let's use the stored setting.
+  chkUseGhostscript.Checked := iniStorage.ReadBoolean('UseGhostscript', False);
+  {$ENDIF}
 
   // Restore the settings
   iniStorage.Restore;
@@ -399,7 +417,7 @@ begin
   // 1) Output to PostScript,
   // 2) ps2pdf to PDF.
   // This is because there is no pdfroff.exe. Requires Ghostscript.
-  if rdPdf.Checked then
+  if rdPdf.Checked and not chkUseGhostscript.Checked then
   begin
     buildOpts := buildOpts + ' -Tpdf';
     if chkBoxExtras.Checked[1] then buildOpts := buildOpts + ' -mpdfmark';
@@ -421,16 +439,20 @@ begin
 
   {$IFDEF WINDOWS}
   if buildSuccess and hasGhostscript and rdPdf.Checked then
+  {$ELSE}
+  // On non-Windows systems, Ghostscript is entirely optional.
+  if buildSuccess and hasGhostscript and chkUseGhostscript.Checked and rdPdf.Checked then
+  {$ENDIF}
   begin
     // Invoke ps2pdf:
     buildOpts := 'ps2pdf';
     // outputFileName is still the .ps file. Just use it as the input name.
     buildOpts := buildOpts + ' ' + outputFileName;
     buildSuccess := BuildWindow.BuildDocument(buildOpts, logFileName);
-    if buildSuccess then
-       DeleteFile(outputFileName); // get rid of the .ps file
+
+    if buildSuccess and not chkKeepPostscriptFile.Checked then;
+       DeleteFile(outputFileName); // get rid of the .ps fil
   end;
-  {$ENDIF}
 
   if buildSuccess then
     MainStatusBar.Panels[1].Text := 'build successful'
@@ -517,7 +539,16 @@ begin
   iniStorage.WriteBoolean('AutoSaveBuildSettings', chkAutoSaveBuildSettings.Checked);
   iniStorage.WriteBoolean('AutoUpdateCheck', chkUpdateCheckOnStart.Checked);
 
+  // Store the PDF settings:
+  iniStorage.WriteBoolean('UseGhostscript', chkUseGhostscript.Checked);
+  iniStorage.WriteBoolean('KeepPsFile', chkKeepPostscriptFile.Checked);
+
   iniStorage.Save;
+end;
+
+procedure TMainForm.chkUseGhostscriptChange(Sender: TObject);
+begin
+  chkKeepPostscriptFile.Enabled := chkUseGhostscript.Checked;
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);

@@ -1,7 +1,9 @@
 Version [next]
 
-[Feature] On Windows, Ghostscript replaced pdfroff.
+[Feature] On Windows, Ghostscript replaced pdfroff (thanks @wysardry).
 [Bugfix] The groff detection logic was not as logical as it should have been.
+[Feature] There is an option to keep both the .ps and the .pdf file now.
+[Feature] Non-Windows users can choose to use Ghostscript (if installed) or pdfroff.
 
 -------------------------------
 
