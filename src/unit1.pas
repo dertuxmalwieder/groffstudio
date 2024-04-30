@@ -125,6 +125,10 @@ var
   BuildWindow: TBuildStatusWindow;
   hasGroff: boolean;
   GroffOutputVersion: string;
+  {$IFDEF WINDOWS}
+  hasGhostscript: boolean;
+  ps2pdfOutput: string;
+  {$ENDIF}
 
 implementation
 
@@ -132,6 +136,7 @@ implementation
 
 procedure TDetectGroffThread.UpdateUI;
 begin
+  // groff:
   MainForm.edtGroffInstalledVersion.Text := GroffOutputVersion;
   if pos('GNU', GroffOutputVersion) = 0 then
   begin
@@ -139,14 +144,27 @@ begin
       + LineEnding + 'If this is correct, you are advised to fix this before continuing.'
       + LineEnding +
       'If it is an error, please tell me so I can improve this detection.');
-    hasGroff := True;
+    hasGroff := False;
+    MainForm.edtGroffInstalledVersion.Text := 'n/a';
+    MainForm.lblTroffCommandNotFound.Visible := True;
   end
   else
+    hasGroff := True;
+
+  // ps2pdf (Windows-only):
+  {$IFDEF WINDOWS}
+  if pos('ps2pdf', ps2pdfOutput) = 0 then
   begin
-    MainForm.edtGroffInstalledVersion.Text := 'n/a';
-    hasGroff := False;
-    MainForm.lblTroffCommandNotFound.Visible := True;
+    ShowMessage('On Windows, for creating PDF files, you need Ghostscript installed.'
+    + LineEnding + 'Sadly, groffstudio could not find ps2pdf.exe in your %PATH%, so '
+    + 'writing PDF files will not be supported.');
+    hasGhostscript := False;
+    MainForm.rdPdf.Enabled := False;
+  end else begin
+    hasGhostscript := True;
+    MainForm.rdPdf.Enabled := True;
   end;
+  {$ENDIF}
 end;
 
 procedure TDetectGroffThread.Execute;
@@ -154,14 +172,13 @@ begin
   FreeOnTerminate := True;
 
   {$IFDEF WINDOWS}
-  if RunCommand('cmd', ['/c', 'troff --version'], GroffOutputVersion, [], swoHIDE) then
+  RunCommand('cmd', ['/c', 'troff --version'], GroffOutputVersion, [], swoHIDE);
+  RunCommand('cmd', ['/c', 'ps2pdf'], ps2pdfOutput, [], swoHIDE);
   {$ELSE}
-  if RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion,
-    [], swoHIDE) then
+  RunCommand('/bin/sh', ['-c', 'troff --version'], GroffOutputVersion,
+    [], swoHIDE);
   {$ENDIF}
-  begin
-    Synchronize(@UpdateUI);
-  end;
+  Synchronize(@UpdateUI);
 end;
 
 { TMainForm }
@@ -375,6 +392,11 @@ begin
   if chkBoxExtras.Checked[0] then  buildOpts := buildOpts + ' -mhdtbl';
 
   // - PDF-specifics:
+  {$IFNDEF WINDOWS}
+  // On Windows, we use a two-step program:
+  // 1) Output to PostScript,
+  // 2) ps2pdf to PDF.
+  // This is because there is no pdfroff.exe. Requires Ghostscript.
   if rdPdf.Checked then
   begin
     buildOpts := buildOpts + ' -Tpdf';
@@ -382,6 +404,7 @@ begin
     outputFileName := currentGroffFilePath + '.pdf';
   end
   else
+  {$ENDIF}
     outputFileName := currentGroffFilePath + '.ps';
 
   // - Input file:
@@ -397,6 +420,24 @@ begin
     MainStatusBar.Panels[1].Text := 'build successful'
   else
     MainStatusBar.Panels[1].Text := 'build problem';
+
+  {$IFDEF WINDOWS}
+  if buildSuccess and hasGhostscript then
+  begin
+    // Invoke ps2pdf:
+    buildOpts := 'ps2pdf';
+    // outputFileName is still the .ps file. Just use it as the input name.
+    buildOpts := buildOpts + ' ' + outputFileName;
+    buildSuccess := BuildWindow.BuildDocument(buildOpts, logFileName);
+    if buildSuccess then
+    begin
+      MainStatusBar.Panels[1].Text := 'build successful';
+      DeleteFile(outputFileName); // get rid of the .ps file
+    end
+    else
+      MainStatusBar.Panels[1].Text := 'build problem';
+  end;
+  {$ENDIF}
 
   FreeAndNil(BuildWindow);
 end;
