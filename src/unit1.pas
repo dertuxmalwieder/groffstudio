@@ -422,7 +422,7 @@ begin
     MainStatusBar.Panels[1].Text := 'build problem';
 
   {$IFDEF WINDOWS}
-  if buildSuccess and hasGhostscript then
+  if buildSuccess and hasGhostscript and rdPdf.Checked then
   begin
     // Invoke ps2pdf:
     buildOpts := 'ps2pdf';
