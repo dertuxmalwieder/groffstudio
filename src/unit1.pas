@@ -136,8 +136,7 @@ implementation
 
 procedure TDetectGroffThread.UpdateUI;
 begin
-  // groff:
-  MainForm.edtGroffInstalledVersion.Text := GroffOutputVersion;
+  // Try to find groff:
   if pos('GNU', GroffOutputVersion) = 0 then
   begin
     ShowMessage('groffstudio thinks that your installed version of troff is not GNU troff.'
@@ -149,10 +148,13 @@ begin
     MainForm.lblTroffCommandNotFound.Visible := True;
   end
   else
+  begin
     hasGroff := True;
+    MainForm.edtGroffInstalledVersion.Text := GroffOutputVersion;
+  end;
 
-  // ps2pdf (Windows-only):
   {$IFDEF WINDOWS}
+  // Try to find ps2pdf (Windows-only):
   if pos('ps2pdf', ps2pdfOutput) = 0 then
   begin
     ShowMessage('On Windows, for creating PDF files, you need Ghostscript installed.'
