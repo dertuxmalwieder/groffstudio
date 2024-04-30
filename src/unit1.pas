@@ -416,10 +416,6 @@ begin
 
   // Build:
   buildSuccess := BuildWindow.BuildDocument(buildOpts, logFileName);
-  if buildSuccess then
-    MainStatusBar.Panels[1].Text := 'build successful'
-  else
-    MainStatusBar.Panels[1].Text := 'build problem';
 
   {$IFDEF WINDOWS}
   if buildSuccess and hasGhostscript and rdPdf.Checked then
@@ -430,14 +426,14 @@ begin
     buildOpts := buildOpts + ' ' + outputFileName;
     buildSuccess := BuildWindow.BuildDocument(buildOpts, logFileName);
     if buildSuccess then
-    begin
-      MainStatusBar.Panels[1].Text := 'build successful';
-      DeleteFile(outputFileName); // get rid of the .ps file
-    end
-    else
-      MainStatusBar.Panels[1].Text := 'build problem';
+       DeleteFile(outputFileName); // get rid of the .ps file
   end;
   {$ENDIF}
+
+  if buildSuccess then
+    MainStatusBar.Panels[1].Text := 'build successful'
+  else
+    MainStatusBar.Panels[1].Text := 'build problem';
 
   FreeAndNil(BuildWindow);
 end;
