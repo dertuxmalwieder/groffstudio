@@ -66,6 +66,7 @@ type
     Label13: TLabel;
     Label14: TLabel;
     Label15: TLabel;
+    Label16: TLabel;
     lblGithubRepo: TLabel;
     lblFossilRepo: TLabel;
     lblWebsite: TLabel;
