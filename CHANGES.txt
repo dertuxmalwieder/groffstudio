@@ -1,4 +1,5 @@
-Version [next]
+Version 0.14.0
+2024-05-02
 
 [Feature] On Windows, Ghostscript replaced pdfroff (thanks for testing @wysardry).
 [Bugfix] The groff detection logic was not as logical as it should have been.
