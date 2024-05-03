@@ -35,10 +35,10 @@ object MainForm: TMainForm
     Height = 662
     Top = 8
     Width = 827
-    ActivePage = tsSettings
+    ActivePage = tsEdit
     Anchors = [akTop, akLeft, akRight, akBottom]
     Style = tsFlatButtons
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     object tsEdit: TTabSheet
       Caption = 'edit a groff document'
