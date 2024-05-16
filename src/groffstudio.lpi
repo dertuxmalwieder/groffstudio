@@ -19,11 +19,13 @@
         <Resource_0 FileName="..\LICENSE" Type="RCDATA" ResourceName="LICENSE"/>
       </Resources>
     </General>
+    <i18n>
+      <OutDir Value="l10n"/>
+    </i18n>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <MinorVersionNr Value="14"/>
-      <BuildNr Value="12"/>
+      <MinorVersionNr Value="15"/>
       <StringTable ProductName="groffstudio"/>
     </VersionInfo>
     <BuildModes>
