@@ -338,9 +338,7 @@ begin
           // Compare the two versions - ours and the online one:
           GroffHelpers.VerStrCompare(reGroffStudioVersion.Match[1], FileVerInfo.VersionStrings.Values['FileVersion'], HasVersionUpdate);
           if HasVersionUpdate > 0 then
-            MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available'
-          else
-            MainStatusBar.Panels[2].Text := IntToStr(HasVersionUpdate);
+            MainStatusBar.Panels[2].Text := 'update ' + reGroffStudioVersion.Match[1] + ' available';
         end;
       end else begin
         edtOnlineGroffVersionWindows.Text := 'n/a';

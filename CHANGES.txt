@@ -1,6 +1,7 @@
 Version [next]
 
 [Changed] New icon, slightly less awful.
+[Bugfix] On macOS, groffstudio printed debug output where it shouldn't.
 
 -------------------------------
 
