@@ -1,7 +1,9 @@
-Version [next]
+Version 0.14.1
+2025-01-02
 
 [Changed] New icon, slightly less awful.
 [Bugfix] On macOS, groffstudio printed debug output where it shouldn't.
+[Bugfix] Preprocessors did not quite work as well as they should have.
 
 -------------------------------
 

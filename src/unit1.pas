@@ -396,6 +396,7 @@ procedure TMainForm.btnBuildClick(Sender: TObject);
 var
   buildSuccess: boolean;
   buildOpts: string;
+  preproc: string;
   logFileName: string = '';
   outputFileName: string;
 begin
@@ -415,12 +416,13 @@ begin
   buildOpts := buildOpts + ' -Kutf8';
 
   // - Preprocessors:
-  if chkBoxPreprocessors.Checked[0] then  buildOpts := buildOpts + ' -chem';
-  if chkBoxPreprocessors.Checked[1] then  buildOpts := buildOpts + ' -eqn';
-  if chkBoxPreprocessors.Checked[2] then  buildOpts := buildOpts + ' -grn';
-  if chkBoxPreprocessors.Checked[3] then  buildOpts := buildOpts + ' -pic';
-  if chkBoxPreprocessors.Checked[4] then  buildOpts := buildOpts + ' -refer';
-  if chkBoxPreprocessors.Checked[5] then  buildOpts := buildOpts + ' -tbl';
+  if chkBoxPreprocessors.Checked[0] then  preproc := preproc + 'chem | ';
+
+  if chkBoxPreprocessors.Checked[1] then  buildOpts := buildOpts + ' -e';   // eqn
+  if chkBoxPreprocessors.Checked[2] then  buildOpts := buildOpts + ' -g';   // grn
+  if chkBoxPreprocessors.Checked[3] then  buildOpts := buildOpts + ' -p';   // pic
+  if chkBoxPreprocessors.Checked[4] then  buildOpts := buildOpts + ' -R';   // refer
+  if chkBoxPreprocessors.Checked[5] then  buildOpts := buildOpts + ' -t';   // tbl
 
   if chkBoxExtras.Checked[0] then  buildOpts := buildOpts + ' -mhdtbl';
 
@@ -448,6 +450,7 @@ begin
   if chkLogFile.Checked then logFileName := currentGroffFilePath + '.log';
 
   // Build:
+  buildOpts := preproc + buildOpts;
   buildSuccess := BuildWindow.BuildDocument(buildOpts, logFileName);
 
 {$IFDEF WINDOWS}
