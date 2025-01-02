@@ -8,6 +8,7 @@ object MainForm: TMainForm
   ClientWidth = 847
   DefaultMonitor = dmPrimary
   Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   object MainStatusBar: TStatusBar
@@ -231,7 +232,7 @@ object MainForm: TMainForm
         ParentColor = False
         ParentFont = False
         TabOrder = 3
-        Gutter.Width = 57
+        Gutter.Width = 55
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -703,7 +704,7 @@ object MainForm: TMainForm
             Options = [sgmoDeDuplicateMarksOnOverflow]
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
+            Width = 15
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone

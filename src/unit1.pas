@@ -408,6 +408,7 @@ begin
 
   // Build the parameters:
   buildOpts := 'groff';
+  preproc := '';
 
   // - Macro:
   if LeftStr(cmbMacro.Text, 1) = 'm' then buildOpts := buildOpts + ' -' + cmbMacro.Text;
